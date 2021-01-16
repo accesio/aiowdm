@@ -1,3 +1,0 @@
-EXTRA_CFLAGS = -Wall -g -DAIO_DEBUG=1
-
-obj-m = aiowdm.o
