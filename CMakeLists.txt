@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.0)
+set(CMAKE_CXX_STANDARD 11)
+if (NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+project (AIOWDM)
+add_compile_options(-Wall)
+include(GNUInstallDirs)
+
+add_subdirectory(aiowdm)
+add_subdirectory(module)
+#add_subdirectory(test)
+#add_subdirectory(include)
+#add samples directory back in later
+#add_subdirectory(samples)
