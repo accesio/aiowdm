@@ -95,8 +95,6 @@ int aiowdm_card_open(const char *fname)
 
 int aiowdm_card_close  (int handle)
 {
-  int i;
-
   if (contexts[handle].irq_enabled)
   {
     aiowdm_irq_disable(handle);

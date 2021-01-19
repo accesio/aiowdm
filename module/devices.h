@@ -42,13 +42,13 @@ void * Generate; /*  diagnostic: force card to generate an IRQ, [generally: if e
 
 struct aio_irq_descriptor PCI_2_STYLE = /* S4C&04|1E<||1F<	 */
 {
-.init = { 0 }, 
+.init = { 0 },
 .test_latched = isLatched_PCI,
 .disable =
 	{
 	REGISTER_ACTION_WRITE_8, .bar = 2, .offset = 0x1E
-	}, 
-.Clear = { 0 }, 
+	},
+.Clear = { 0 },
 .Enable =
 	{
 	REGISTER_ACTION_WRITE_8, .bar = 2, .offset = 0x1F
@@ -119,8 +119,8 @@ struct aio_irq_descriptor PCI_6_STYLE = /* S4C&04|9>||4<81	 */
 .disable =
 	{
 	REGISTER_ACTION_READ_8, .bar = 2, .offset = 0x09
-	}, 
-.Clear = { 0 }, 
+	},
+.Clear = { 0 },
 .Enable =
 	{
 	REGISTER_ACTION_WRITE_8, .bar = 2, .offset = 0x04, .value = 0x81
@@ -135,7 +135,7 @@ struct aio_irq_descriptor PCI_7_STYLE = /* S4C&04|9>||4>	 */
 .disable =
 {
 	REGISTER_ACTION_READ_8, .bar = 2, .offset = 0x09
-}, 
+},
 .Clear = { 0 },
 .Enable =
 	{
@@ -146,7 +146,7 @@ struct aio_irq_descriptor PCI_7_STYLE = /* S4C&04|9>||4>	 */
 
 struct aio_irq_descriptor PCI_8_STYLE = /* S4C&04|B<FF|F<|B<00	 */
 {
-.init = { 0 }, 
+.init = { 0 },
 .test_latched = isLatched_PCI,
 .disable =
 	{
@@ -262,7 +262,7 @@ struct aio_irq_descriptor PCI_NO_IRQ_STYLE = /* S4C&04|||	 	 */
 	REGISTER_ACTION_WRITE_8, .bar = 2, .offset = 0x1E
 	},
 .Clear = { 0 },
-.Enable = 
+.Enable =
 	{
 	REGISTER_ACTION_WRITE_8, .bar = 2, .offset = 0x1F
 	},
@@ -412,7 +412,7 @@ struct aio_irq_descriptor NYI =
 .Generate = NULL,
 };
 
-struct aio_pci_dev_cfg 
+struct aio_pci_dev_cfg
 {
 	uint16_t pciDevId; /* PCI Device ID */
 	char * Model; /* Model name */
@@ -750,3 +750,119 @@ struct aio_pci_dev_cfg
 };
 
  #define NUM_ACCES_PCI_DEVICES sizeof(aio_pci_dev_table)/sizeof(aio_pci_dev_table[0])
+
+#ifdef __KERNEL__
+ static struct pci_device_id acces_pci_id_table[] =
+ {
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0100) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0101) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0102) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0103) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0104) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0105) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0106) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0107) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0108) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0109) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x010a) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x010b) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x010c) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x010d) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x010e) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x010f) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0508) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0518) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0520) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0521) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0703) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x07c0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x07d0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0920) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0bc0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0bc1) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0bd0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0bd1) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c40) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c50) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c51) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c52) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c53) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c54) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c57) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c60) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c61) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c62) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c68) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c69) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c6a) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c70) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c71) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c78) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0c79) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0dc8) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e50) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e51) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e52) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e53) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e54) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e55) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e56) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e57) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e60) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e61) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e62) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e63) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e6a) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e71) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0e79) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0f00) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0f01) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0f02) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0f08) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0f09) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0fc0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0fc1) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0fc2) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0fd0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x0fd1) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x2230) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x2231) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x22c0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x25c0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x2c50) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x2c58) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x2c59) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x2c70) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x2e50) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x2ee0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x2fc0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x2fc1) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x4890) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x4898) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x48a0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x48a8) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x48b0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x48d0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x48d8) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x48e0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x48e8) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x48f0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x5ed0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x6c90) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x6c98) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x6ca0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x6ca8) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x6ca9) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x6cb0) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0x6cb1) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0xaca8) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0xaca9) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0xeca8) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0xeca9) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0xecaa) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0xece8) },
+{ PCI_DEVICE(AIO_PCI_VEN_ID, 0xece9) },
+{0},
+ };
+ #endif
+

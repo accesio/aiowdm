@@ -13,7 +13,7 @@ Set( MODULE_OUTPUT_FILES    aiowdm.o
 Set( MODULE_SOURCE_FILES    aiowdm.c )
 
 Set( DRIVER_FILE        aiowdm.ko )
-Set( DRIVER_TARGET_NAME aiowd-module )
+Set( DRIVER_TARGET_NAME aiowdm-module )
 Set( DRIVER_BIN_FILE    ${PROJECT_BINARY_DIR}/${DRIVER_FILE} )
 Set( MODULE_SOURCE_DIR  ${PROJECT_SOURCE_DIR}/module )
 

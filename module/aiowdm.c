@@ -125,6 +125,11 @@ static int aio_driver_init(void)
 		aio_driver_pci_device_table[i].subvendor = PCI_ANY_ID;
 		aio_driver_pci_device_table[i].subdevice = PCI_ANY_ID;
     aio_driver_pci_device_table[i].driver_data = (kernel_ulong_t)&aio_pci_dev_table[i];
+    if ( aio_pci_dev_table[i].pciDevId != acces_pci_id_table[i].device )
+    {
+      aio_driver_err_print("acces_pci_id_table and aio_pci_dev_table mismatch. Refusing to load");
+      goto err_mismatch;
+    }
 	}
 
 	aio_pci_driver.id_table = aio_driver_pci_device_table;
@@ -147,10 +152,12 @@ static int aio_driver_init(void)
 
 
 	return 0;
+
 err_cdev_create:
 //TODO: clean up pci driver registration
 err_register:
 //TODO: magic number
+err_mismatch:
 	return -1;
 }
 
@@ -163,6 +170,7 @@ static void aio_driver_exit(void)
 
 module_init(aio_driver_init);
 module_exit(aio_driver_exit);
+MODULE_DEVICE_TABLE(pci, acces_pci_id_table);
 
 int aio_driver_pci_probe (struct pci_dev *dev, const struct pci_device_id *id)
 {
