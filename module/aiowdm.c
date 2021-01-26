@@ -83,7 +83,7 @@ long ioctl_AIOWDM_BAR_RESOURCE_GET (struct file *filp, unsigned long arg);
 long ioctl_AIOWDM_IRQ_ENABLE (struct file *filp, unsigned long arg);
 long ioctl_AIOWDM_IRQ_DISABLE (struct file *filp, unsigned long arg);
 long ioctl_AIOWDM_IRQ_WAIT (struct file *filp, unsigned long arg);
-long ioctl_AIOWDM_IRQ_WAIT_CANCLE (struct file *filp, unsigned long arg);
+long ioctl_AIOWDM_IRQ_WAIT_CANCEL (struct file *filp, unsigned long arg);
 
 int aio_driver_register_action(void *bar_bases[6], struct register_operation op);
 
@@ -417,7 +417,7 @@ long aio_driver_ioctl (struct file *filp, unsigned int ioctl, unsigned long arg)
       status = ioctl_AIOWDM_IRQ_WAIT (filp, arg);
       break;
     case AIOWDM_IRQ_WAIT_CANCLE:
-      status = ioctl_AIOWDM_IRQ_WAIT_CANCLE (filp, arg);
+      status = ioctl_AIOWDM_IRQ_WAIT_CANCEL (filp, arg);
       break;
     default:
       aio_driver_err_print("Invalid IOCTL call for device");
@@ -476,7 +476,7 @@ long ioctl_AIOWDM_IRQ_WAIT (struct file *filp, unsigned long arg)
   return -EPERM;
 }
 
-long ioctl_AIOWDM_IRQ_WAIT_CANCLE (struct file *filp, unsigned long arg)
+long ioctl_AIOWDM_IRQ_WAIT_CANCEL (struct file *filp, unsigned long arg)
 {
   aio_driver_debug_print("Enter");
   aio_driver_dev_print("Stubbed function");
