@@ -192,7 +192,7 @@ int aio_driver_pci_probe (struct pci_dev *dev, const struct pci_device_id *id)
   context = kmalloc(sizeof(struct aio_device_context), GFP_KERNEL);
   memset(context, 0, sizeof(struct aio_device_context));
 
-  aio_driver_dev_print("context = %p", context);
+  aio_driver_dev_print("context = %px", context);
 
   for (i = 0; i < 6 ; i++) //TODO:look into magic number for BARs
   {
@@ -210,9 +210,10 @@ int aio_driver_pci_probe (struct pci_dev *dev, const struct pci_device_id *id)
         //in StartDevice()
         context->default_bar = i;
       }
-      aio_driver_dev_print("context->bar_bases[%d] = %p", i, context->bar_bases[i]);
+      aio_driver_dev_print("context->bar_bases[%d] = %px", i, context->bar_bases[i]);
     }
   }
+  aio_driver_dev_print("context->default_bar = %d", context->default_bar);
 
   i = 0;
 
@@ -251,7 +252,7 @@ int aio_driver_pci_probe (struct pci_dev *dev, const struct pci_device_id *id)
 
   context->device = device_create(aio_driver_cdev_class, NULL, context->dev_major, NULL,  AIO_DEV_PATH "%s", context->dev_cfg->Model);
   dev_set_drvdata(context->device, context);
-  aio_driver_dev_print("context->device = %p", context->device);
+  aio_driver_dev_print("context->device = %px", context->device);
   aio_driver_dev_print("device name: " AIO_DEV_PATH "%s", context->dev_cfg->Model);
   if (IS_ERR(context->device))
   {
@@ -279,7 +280,7 @@ err_out:
 void aio_driver_pci_remove (struct pci_dev *dev)
 {
   struct aio_device_context * context = pci_get_drvdata(dev);
-  aio_driver_err_print("context = %p", context);
+  aio_driver_err_print("context = %px", context);
 
    device_destroy(aio_driver_cdev_class, context->dev_major);
    cdev_del(&context->cdev);
@@ -344,12 +345,12 @@ int aio_driver_open(struct inode *inode, struct file *filp)
 {
   struct aio_device_context *context;
   aio_driver_debug_print("Enter");
-  aio_driver_dev_print("stubbed function. private_data = %p", filp->private_data);
-  aio_driver_dev_print("stubbed function. inode->i_private = %p", inode->i_private);
+  aio_driver_dev_print("stubbed function. private_data = %px", filp->private_data);
+  aio_driver_dev_print("stubbed function. inode->i_private = %px", inode->i_private);
   aio_driver_dev_print("inode->i_rdev = 0x%x", inode->i_rdev);
-  aio_driver_dev_print("inode->i_cdev = %p", inode->i_cdev);
+  aio_driver_dev_print("inode->i_cdev = %px", inode->i_cdev);
   context = container_of(inode->i_cdev, struct aio_device_context, cdev);
-  aio_driver_dev_print("context = %p", context);
+  aio_driver_dev_print("context = %px", context);
   filp->private_data = context;
 
   return 0;
@@ -372,25 +373,19 @@ loff_t aio_driver_llseek(struct file *filp, loff_t off, int whence)
 int aio_driver_mmap(struct file *filp, struct vm_area_struct *vma)
 {
   struct aio_device_context *context = filp->private_data;
+  int status;
   aio_driver_debug_print("Enter");
-  aio_driver_dev_print("context = %p", context);
+  aio_driver_dev_print("context = %px", context);
   aio_driver_dev_print("pci_resource_start(context->pci_dev, 0) = 0x%llx", pci_resource_start(context->pci_dev, 0));
   aio_driver_dev_print("pci_resource_start(context->pci_dev, 1) = 0x%llx", pci_resource_start(context->pci_dev, 1));
   aio_driver_dev_print("pci_resource_start(context->pci_dev, 2) = 0x%llx", pci_resource_start(context->pci_dev, 2));
 
-  // if (remap_pfn_range(vma, vma->vm_start, pci_resource_start(context->pci_dev, 2),
-  //                      PAGE_SIZE, vma->vm_page_prot))
-  // {
-  //   aio_driver_err_print("io_remap_page_range failed\n");
-  //   return -EAGAIN;
-  // }
-  if (vm_iomap_memory(vma, pci_resource_start(context->pci_dev, 2), PAGE_SIZE))
-  {
-    aio_driver_err_print("io_remap_page_range failed\n");
-    return -EAGAIN;
-  }
-  aio_driver_debug_print("Exit");
-  return 0;
+  //status = io_remap_pfn_range(vma, vma->vm_start, (size_t)context->bar_bases[context->default_bar] >> PAGE_SHIFT, pci_resource_len(context->pci_dev, context->default_bar), vma->vm_page_prot);
+  //status = pci_mmap_resource_range(context->pci_dev, context->default_bar, vma, pci_mmap_io, 0);
+  status = pci_mmap_resource_range(context->pci_dev, context->default_bar, vma, pci_mmap_io, 0);
+
+  aio_driver_debug_print("Exit status = %d", status);
+  return status;
 }
 
 long aio_driver_ioctl (struct file *filp, unsigned int ioctl, unsigned long arg)
@@ -440,7 +435,7 @@ long ioctl_AIOWDM_CARD_INFO_GET (struct file *filp, unsigned long arg)
   //if ( card_info->name_size != 0)
   {
     aio_driver_dev_print("attempt to copy name. context->dev_cfg->Model = %s, strlen = %lu", context->dev_cfg->Model, strlen(context->dev_cfg->Model));
-    aio_driver_dev_print("attempt to copy name. context->dev_cfg->Model = %p", context->dev_cfg->Model);
+    aio_driver_dev_print("attempt to copy name. context->dev_cfg->Model = %px", context->dev_cfg->Model);
 
     copy_to_user(card_info->name, context->dev_cfg->Model, strlen(context->dev_cfg->Model));
     //strncpy(card_info->name, context->dev_cfg->Model, 11);
