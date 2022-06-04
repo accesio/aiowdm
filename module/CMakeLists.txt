@@ -1,19 +1,19 @@
 #https://cmake.org/pipermail/cmake/2007-August/015891.html
 
-Set( MODULE_OUTPUT_FILES    aiowdm.o
-                            aiowdm.mod.c
-                            aiowdm.mod.o
-                            aiowdm.ko
-                            .aiowdm.o.cmd
-                            .aiowdm.ko.cmd
-                            .aiowdm.mod.o.cmd
-                            .tmp_versions/aiowdm.mod
+Set( MODULE_OUTPUT_FILES    accesio_pci.o
+                            accesio_pci.mod.c
+                            accesio_pci.mod.o
+                            accesio_pci.ko
+                            .accesio_pci.o.cmd
+                            .accesio_pci.ko.cmd
+                            .accesio_pci.mod.o.cmd
+                            .tmp_versions/accesio_pci.mod
                             .tmp_versions/ )
 
-Set( MODULE_SOURCE_FILES    aiowdm.c )
+Set( MODULE_SOURCE_FILES    accesio_pci.c )
 
-Set( DRIVER_FILE        aiowdm.ko )
-Set( DRIVER_TARGET_NAME aiowdm-module )
+Set( DRIVER_FILE        accesio_pci.ko )
+Set( DRIVER_TARGET_NAME accesio_pci-module )
 Set( DRIVER_BIN_FILE    ${PROJECT_BINARY_DIR}/${DRIVER_FILE} )
 Set( MODULE_SOURCE_DIR  ${PROJECT_SOURCE_DIR}/module )
 

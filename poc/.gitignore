@@ -1,0 +1,12 @@
+.pci-poc.ko.cmd
+.pci-poc.mod.cmd
+.pci-poc.mod.o.cmd
+.pci-poc.o.cmd
+Module.symvers
+modules.order
+pci-poc.ko
+pci-poc.mod
+pci-poc.mod.c
+pci-poc.mod.o
+pci-poc.o
+poc-tester
