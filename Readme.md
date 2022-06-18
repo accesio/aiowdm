@@ -57,3 +57,13 @@ int pci_mmap_page_range(struct pci_dev *pdev, int bar,
 			struct vm_area_struct *vma,
 			enum pci_mmap_state mmap_state, int write_combine);
 ```
+
+#cmake3 on RHEL/CentOS
+Enable epel:
+https://docs.fedoraproject.org/en-US/epel/
+Install cmake3:
+sudo yum -y install cmake3
+
+
+
+https://itecnote.com/tecnote/python-cmake-on-linux-centos-7-how-to-force-the-system-to-use-cmake3/
