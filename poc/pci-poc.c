@@ -6,9 +6,8 @@
 
 
 
-
 static const struct pci_device_id poc_pci_tbl[] = {
-	{ PCI_DEVICE(0x494f, 0x48e0) },
+	{ PCI_DEVICE(0x494f, 0x0f08) },
 	{ 0 }
 };
 
@@ -31,6 +30,7 @@ struct poc_pci_dev_data
 
 static int poc_driver_open (struct inode *inode, struct file *filp);
 static int poc_driver_release (struct inode *inode, struct file *filp);
+static int poc_driver_mmap (struct file *filp, struct vm_area_struct *vma);
 
 
 static struct file_operations poc_driver_fops =
@@ -38,6 +38,7 @@ static struct file_operations poc_driver_fops =
 	.owner = THIS_MODULE,
 	.open = poc_driver_open,
 	.release = poc_driver_release,
+	.mmap = poc_driver_mmap,
 };
 
 struct poc_device_context
@@ -151,12 +152,27 @@ void pci_poc_remove (struct pci_dev *dev)
 
 static int poc_driver_open (struct inode *inode, struct file *filp)
 {
+	struct poc_device_context *context = container_of(inode->i_cdev, struct poc_device_context, cdev);
+	filp->private_data = context;
 	return 0;
 }
 
 static int poc_driver_release (struct inode *inode, struct file *filp)
 {
 	return 0;
+}
+
+static int poc_driver_mmap (struct file *filp, struct vm_area_struct *vma)
+{
+	struct poc_device_context *context = filp->private_data;
+	int status;
+
+	//status = pci_mmap_resource_range(context->pci_dev_data.pci_dev, 1, vma, pci_mmap_mem, 0);
+	pci_mmap_resource_range
+	//status = pci_mmap_page_range (context->pci_dev_data.pci_dev, 2, vma, pci_mmap_mem, 0);
+	//status = pci_iobar_pfn(context->pci_dev_data.pci_dev, 2, vma);
+	//status = pci_mmap_resource(NULL, NULL, NULL, 0);
+		return 0;
 }
 
 

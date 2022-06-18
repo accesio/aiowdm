@@ -1,7 +1,12 @@
 # Design
-* devices header file will contain the aio_pci_dev_table similar to current, but IRQ will be a function pointer to interrupt handler
+* devices header file will be two tables. One that is the deviceID and a struct describing the device. The other is the static device table required for Linux to load our device driver when it's a loadable module.
+  * The integrity of the two tables above will be verified on module load and a mismatch is to be treated as a fatal error.
+  * The primary goal for this portion of the design is that it be less error prone when adding new devices that are software compatible with existing devices.
 * WaitForIRQ will return a mask that varies by card (stay compatible with non-zero on success)
 * mmap BARs? Need POC. https://unix.stackexchange.com/questions/643077/how-can-my-pci-device-driver-remap-pci-memory-to-userspace
+  * Not possible with port I/O
+  * Possibly implement port I/O fread() and fwrite() handlers.
+    * Would need way to set BAR (ioctl probably)
 * https://sysprog21.github.io/lkmpg/
 
 # From pci.rst in Linux kernel Docs
