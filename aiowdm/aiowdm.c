@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include "aiowdm.h"
-#include "../module/aiowdm_ioctl.h"
+#include "../module_old/aiowdm_ioctl.h"
 
 #define AIOWDM_DEV_PATH "/dev/aiowdm/"
 

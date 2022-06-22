@@ -1,0 +1,11 @@
+.aiowdm.ko.cmd
+.aiowdm.mod.cmd
+.aiowdm.mod.o.cmd
+.aiowdm.o.cmd
+Module.symvers
+aiowdm.ko
+aiowdm.mod
+aiowdm.mod.c
+aiowdm.mod.o
+aiowdm.o
+modules.order

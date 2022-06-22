@@ -15,7 +15,7 @@ Set( MODULE_SOURCE_FILES    aiowdm.c )
 Set( DRIVER_FILE        aiowdm.ko )
 Set( DRIVER_TARGET_NAME aiowdm-module )
 Set( DRIVER_BIN_FILE    ${PROJECT_BINARY_DIR}/${DRIVER_FILE} )
-Set( MODULE_SOURCE_DIR  ${PROJECT_SOURCE_DIR}/module )
+Set( MODULE_SOURCE_DIR  ${PROJECT_SOURCE_DIR}/module_old )
 
 if (AIO_DEBUG)
   set (AIO_CFLAGS "-DAIO_DEBUG=1")
@@ -33,7 +33,7 @@ Set( KBUILD_CMD ${CMAKE_MAKE_PROGRAM}
 Add_Custom_Command( OUTPUT  ${DRIVER_BIN_FILE}
                             ${MODULE_OUTPUT_FILES}
                     COMMAND ${KBUILD_CMD}
-                    COMMAND cp -f ${DRIVER_FILE} ${PROJECT_BINARY_DIR}/module/${DRIVER_FILE}
+                    COMMAND cp -f ${DRIVER_FILE} ${PROJECT_BINARY_DIR}/module_old/${DRIVER_FILE}
                     WORKING_DIRECTORY ${MODULE_SOURCE_DIR}
                     DEPENDS ${MODULE_SOURCE_FILES} VERBATIM )
 
