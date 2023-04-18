@@ -8,6 +8,7 @@ add_compile_options(-Wall)
 include(GNUInstallDirs)
 
 add_subdirectory(aiowdm)
+add_subdirectory(module)
 add_subdirectory(module_old)
 #add_subdirectory(test)
 #add_subdirectory(include)
