@@ -4,8 +4,10 @@
 #include <linux/pci.h>
 #include <linux/cdev.h>
 #include <linux/uaccess.h>
+#include <linux/device.h>
 
 #include "accesio_pci_ids.h"
+#include "accesio_pci_ioctl.h"
 
 MODULE_DESCRIPTION("ACCESIO PCI driver for aiowdm-linux");
 MODULE_AUTHOR("ACCES");
@@ -16,11 +18,11 @@ MODULE_LICENSE("GPL");
 				do { printk( "%s:%d:%s(): " fmt "\n", __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__); } while (0);
 
 #ifndef AIO_DEBUG
-#define AIO_DEBUG 0
+#define AIO_DEBUG 1
 #endif
 
 #ifndef AIO_VERBOSE
-#define AIO_VERBOSE 0
+#define AIO_VERBOSE 1
 #endif
 
 //Pretty much anything that we might want customers to generate for debugging issues
@@ -41,11 +43,11 @@ struct accesio_pci_device_context
     struct pci_dev                       *pci_dev;
     struct cdev                          cdev;
     dev_t                                dev_major;
-    struct device                       *device; //What is this for?
     int                                 default_bar; //used when for aiowdm calls that take CardNum parameter
     void                                *bar_bases[6];
     union accesio_pci_isr_context       *accesio_pci_isr_context;
     spinlock_t                           irq_lock;
+    struct device                       *char_dev;
 };
 
 int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *id);
@@ -80,6 +82,7 @@ static struct pci_driver accesio_pci_driver = {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma region irq_ops
+
 
 #define accesio_handler_ddata() \
     struct accesio_pci_device_context *ddata = NULL; \
@@ -554,6 +557,51 @@ irqreturn_t interrupt_adio16f_style (int irq, void *context)
 
 #pragma endregion irq_ops
 
+#pragma region char_driver_ops
+
+
+#define ACCESIO_CHAR_DEVICE_NAME "accesio"
+
+static int accesio_char_major;
+static int accesio_char_next_minor;  //used to minor number when calling
+
+
+long accesio_char_driver_unlocked_ioctl (struct file *, unsigned int, unsigned long); 
+int accesio_char_driver_mmap (struct file *, struct vm_area_struct *); 
+int accesio_char_driver_open (struct inode *, struct file *);
+int accesio_char_driver_release (struct inode *, struct file *);
+
+
+struct file_operations accesio_char_driver_fops = {
+    .unlocked_ioctl = accesio_char_driver_unlocked_ioctl,
+    .mmap = accesio_char_driver_mmap,
+    .open = accesio_char_driver_open,
+    .release = accesio_char_driver_release,
+};
+
+long accesio_char_driver_unlocked_ioctl (struct file *, unsigned int, unsigned long)
+{
+    aio_driver_err_print("Stub called");
+    return -1;
+}
+int accesio_char_driver_mmap (struct file *, struct vm_area_struct *)
+{
+    aio_driver_err_print("Stub called");
+    return -1;
+}
+int accesio_char_driver_open (struct inode *, struct file *)
+{
+    aio_driver_err_print("Stub called");
+    return -1;
+}
+int accesio_char_driver_release (struct inode *, struct file *)
+{
+    aio_driver_err_print("Stub called");
+    return -1;
+}
+
+#pragma endregion char_driver_ops
+
 #pragma region pci_driver_ops
 int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *id)
 {
@@ -561,7 +609,7 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
     struct accesio_pci_device_context *context;
     int i = 0;
 
-    aio_driver_debug_print("Enter");
+    aio_driver_debug_print("<<<");
 
     status = pci_enable_device(dev);
 
@@ -588,6 +636,8 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
         aio_driver_err_print("kmalloc failed");
         goto err_request_regions;
     }
+
+    pci_set_drvdata(dev, context);
 
     context->pci_dev = dev;
 
@@ -631,7 +681,7 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
 
     if (status)
     {
-        aio_driver_err_print("pci_request_region returned %d", status);
+        aio_driver_err_print("request_irq returned %d", status);
         goto err_request_irq;
     }
 
@@ -641,9 +691,23 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
         spin_lock_init(&(context->isr_context->dma_context.dma_data_lock));
     }
 
+    context->char_dev = device_create(NULL, 
+                                     NULL,
+                                     MKDEV(accesio_char_major, accesio_char_next_minor),
+                                     NULL,
+                                     ACCESIO_CHAR_DEVICE_NAME);
+
+    if (IS_ERR(context->char_dev))
+    {
+        aio_driver_err_print("device_create failed: %d", PTR_ERR(context->char_dev));
+        goto err_request_irq;
+    }
+    accesio_char_next_minor++;
+
 err_request_irq:
 descriptor_not_found:
     kfree(context);
+    pci_set_drvdata(dev, NULL);
 err_request_regions:
 err_enable:
     return status;
@@ -652,8 +716,25 @@ void accesio_pci_driver_remove (struct pci_dev *dev)
 {
     struct accesio_pci_device_context *context;
     int i;
-    aio_driver_debug_print("Enter");
+    aio_driver_debug_print("<<<. dev = %p", dev);
+
+    if (NULL == dev)
+    {
+        aio_driver_err_print("dev is NULL");
+        return;
+    }
+
     context = pci_get_drvdata(dev);
+
+    if (NULL == context)
+    {
+        aio_driver_err_print("context is NULL");
+        return;
+    }
+
+    free_irq(context->pci_dev->irq, context);
+
+    aio_driver_debug_print("past free_irq");
 
     for (i = 0 ; i < PCI_STD_NUM_BARS ; i++)
     {
@@ -663,9 +744,14 @@ void accesio_pci_driver_remove (struct pci_dev *dev)
         }
     }
 
-    kfree(context);
+    pci_release_regions(dev);
 
-    
+    aio_driver_debug_print("past pci_iounmap");
+    //TODO: Figure out why this crashes on multiple unloads. For now know that
+    //sizeof(context) is going to get leaked on unload
+    //kfree(context);
+
+    aio_driver_debug_print(">>>");
 }
 int accesio_pci_driver_suspend (struct pci_dev *dev, pm_message_t state)
 {
@@ -684,8 +770,7 @@ void accesio_pci_driver_shutdown (struct pci_dev *dev)
 #pragma endregion pci_driver_ops
 
 
-#pragma region char_driver_ops
-#pragma endregion char_driver_ops
+
 #pragma GCC diagnostic pop
 
 
@@ -715,6 +800,14 @@ static int accesio_pci_init(void)
         goto err_register;
     }
 
+    accesio_char_major = register_chrdev(0, ACCESIO_CHAR_DEVICE_NAME, &accesio_char_driver_fops);
+
+    if (accesio_char_major < 0)
+    {
+        aio_driver_err_print("unable to register_chardev");
+        goto err_register;
+    }
+
     return 0;
 err_register:
 err_mismatch:
@@ -724,8 +817,10 @@ err_mismatch:
 
 static void accesio_pci_exit(void)
 {
-    printk(">>> %s", __FUNCTION__);
+    aio_driver_debug_print("Enter");
+    pci_unregister_driver(&accesio_pci_driver);
 }
+
 
 module_init(accesio_pci_init);
 module_exit(accesio_pci_exit);

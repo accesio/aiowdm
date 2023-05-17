@@ -1,0 +1,13 @@
+.Module.symvers.cmd
+.accesio_pci.ko.cmd
+.accesio_pci.mod.cmd
+.accesio_pci.mod.o.cmd
+.accesio_pci.o.cmd
+.modules.order.cmd
+Module.symvers
+accesio_pci.ko
+accesio_pci.mod
+accesio_pci.mod.c
+accesio_pci.mod.o
+accesio_pci.o
+modules.order

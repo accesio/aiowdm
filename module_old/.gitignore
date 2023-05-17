@@ -9,3 +9,5 @@ aiowdm.mod.c
 aiowdm.mod.o
 aiowdm.o
 modules.order
+.Module.symvers.cmd
+.modules.order.cmd

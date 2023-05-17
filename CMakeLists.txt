@@ -10,7 +10,7 @@ include(GNUInstallDirs)
 add_subdirectory(aiowdm)
 add_subdirectory(module)
 add_subdirectory(module_old)
-#add_subdirectory(test)
+add_subdirectory(test)
 #add_subdirectory(include)
 #add samples directory back in later
 #add_subdirectory(samples)

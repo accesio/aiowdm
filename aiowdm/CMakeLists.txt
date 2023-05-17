@@ -1,6 +1,6 @@
 include_directories(${AIOWDM_SOURCE_DIR}/include)
-add_library(aiowdm STATIC aiowdm.c)
-add_library(aiowdm_shared SHARED aiowdm.c)
+add_library(aiowdm OBJECT aiowdm.cpp)
+add_library(aiowdm_shared SHARED aiowdm.cpp)
 
 set_property(TARGET aiowdm aiowdm_shared PROPERTY POSITION_INDEPENDENT_CODE ON)
 
@@ -12,4 +12,3 @@ ADD_CUSTOM_COMMAND(TARGET aiowdm_shared POST_BUILD
 set (LIBRARY_FILES ${CMAKE_CURRENT_BINARY_DIR}/libaiowdm.so ${CMAKE_CURRENT_BINARY_DIR}/libaiowdm.a)
 
 install (FILES ${LIBRARY_FILES} DESTINATION ${CMAKE_INSTALL_LIBDIR})
-
