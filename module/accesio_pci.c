@@ -50,24 +50,8 @@ struct accesio_pci_device_context
     struct device                       *char_dev;
 };
 
-int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *id);
-void accesio_pci_driver_remove (struct pci_dev *dev);
-int accesio_pci_driver_suspend (struct pci_dev *dev, pm_message_t state);
-int accesio_pci_driver_resume (struct pci_dev *dev);
-void accesio_pci_driver_shutdown (struct pci_dev *dev);
 
 
-static struct pci_driver accesio_pci_driver = {
-.name = "accesio_pci_driver",
-.id_table = acces_pci_id_table,
-.probe = accesio_pci_driver_probe,
-.remove = accesio_pci_driver_remove,
-.suspend = accesio_pci_driver_suspend,
-.resume = accesio_pci_driver_resume,
-.shutdown = accesio_pci_driver_shutdown,
-//TODO: Look into err_handler to see if it applies
-//	const struct pci_error_handlers *err_handler;
-};
 
 
 /***********************init(), clear(), enable(), and handler() functions*****
@@ -603,6 +587,27 @@ int accesio_char_driver_release (struct inode *, struct file *)
 #pragma endregion char_driver_ops
 
 #pragma region pci_driver_ops
+
+int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *id);
+void accesio_pci_driver_remove (struct pci_dev *dev);
+int accesio_pci_driver_suspend (struct pci_dev *dev, pm_message_t state);
+int accesio_pci_driver_resume (struct pci_dev *dev);
+void accesio_pci_driver_shutdown (struct pci_dev *dev);
+
+static struct pci_driver accesio_pci_driver = {
+.name = "accesio_pci_driver",
+.id_table = acces_pci_id_table,
+.probe = accesio_pci_driver_probe,
+.remove = accesio_pci_driver_remove,
+.suspend = accesio_pci_driver_suspend,
+.resume = accesio_pci_driver_resume,
+.shutdown = accesio_pci_driver_shutdown,
+//TODO: Look into err_handler to see if it applies
+//	const struct pci_error_handlers *err_handler;
+};
+
+
+
 int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *id)
 {
     int status = 0;
@@ -699,15 +704,15 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
 
     if (IS_ERR(context->char_dev))
     {
-        aio_driver_err_print("device_create failed: %d", PTR_ERR(context->char_dev));
+        aio_driver_err_print("device_create failed: %ld", PTR_ERR(context->char_dev));
         goto err_request_irq;
     }
     accesio_char_next_minor++;
 
 err_request_irq:
 descriptor_not_found:
-    kfree(context);
-    pci_set_drvdata(dev, NULL);
+    //kfree(context);
+    //pci_set_drvdata(dev, NULL);
 err_request_regions:
 err_enable:
     return status;
@@ -749,7 +754,8 @@ void accesio_pci_driver_remove (struct pci_dev *dev)
     aio_driver_debug_print("past pci_iounmap");
     //TODO: Figure out why this crashes on multiple unloads. For now know that
     //sizeof(context) is going to get leaked on unload
-    //kfree(context);
+    kfree(context);
+    pci_set_drvdata(dev, NULL);
 
     aio_driver_debug_print(">>>");
 }
