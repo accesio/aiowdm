@@ -42,12 +42,12 @@ struct accesio_pci_device_context
     union  accesio_pci_isr_context       *isr_context;
     struct pci_dev                       *pci_dev;
     struct cdev                          cdev;
-    dev_t                                dev_major;
+    struct device                        *device;
+    dev_t                                dev;
     int                                 default_bar; //used when for aiowdm calls that take CardNum parameter
     void                                *bar_bases[6];
     union accesio_pci_isr_context       *accesio_pci_isr_context;
     spinlock_t                           irq_lock;
-    struct device                       *char_dev;
 };
 
 
@@ -546,6 +546,8 @@ irqreturn_t interrupt_adio16f_style (int irq, void *context)
 
 #define ACCESIO_CHAR_DEVICE_NAME "accesio"
 
+#define MAX_CHAR_DEVICES 32 /*have to pick a number for alloc_chrdev_region()*/
+static struct class *accesio_char_class;
 static int accesio_char_major;
 static int accesio_char_next_minor;  //used to minor number when calling
 
@@ -605,8 +607,6 @@ static struct pci_driver accesio_pci_driver = {
 //TODO: Look into err_handler to see if it applies
 //	const struct pci_error_handlers *err_handler;
 };
-
-
 
 int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *id)
 {
@@ -696,19 +696,23 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
         spin_lock_init(&(context->isr_context->dma_context.dma_data_lock));
     }
 
-    context->char_dev = device_create(NULL, 
-                                     NULL,
-                                     MKDEV(accesio_char_major, accesio_char_next_minor),
-                                     NULL,
-                                     ACCESIO_CHAR_DEVICE_NAME);
+    context->dev = MKDEV(accesio_char_major, accesio_char_next_minor);
 
-    if (IS_ERR(context->char_dev))
+    context->device = device_create(accesio_char_class,
+                    NULL,
+                    context->dev,
+                    context,
+                    context->descriptor->name);
+
+    if (IS_ERR(context->device))
     {
-        aio_driver_err_print("device_create failed: %ld", PTR_ERR(context->char_dev));
+        aio_driver_err_print("device_create failed: %ld", PTR_ERR(context->device));
         goto err_request_irq;
     }
+
     accesio_char_next_minor++;
 
+    aio_driver_debug_print (">>>Probe completed succesfully\n");
 err_request_irq:
 descriptor_not_found:
     //kfree(context);
@@ -752,8 +756,9 @@ void accesio_pci_driver_remove (struct pci_dev *dev)
     pci_release_regions(dev);
 
     aio_driver_debug_print("past pci_iounmap");
-    //TODO: Figure out why this crashes on multiple unloads. For now know that
-    //sizeof(context) is going to get leaked on unload
+
+    device_destroy(accesio_char_class, context->dev);
+
     kfree(context);
     pci_set_drvdata(dev, NULL);
 
@@ -775,14 +780,13 @@ void accesio_pci_driver_shutdown (struct pci_dev *dev)
 }
 #pragma endregion pci_driver_ops
 
-
-
 #pragma GCC diagnostic pop
-
 
 static int accesio_pci_init(void)
 {
     int status = 0;
+    dev_t dev;
+
     aio_driver_debug_print("Enter");
     for (int i = 0 ; i < NUM_ACCES_PCI_DEVICES ; i++)
     {
@@ -799,18 +803,28 @@ static int accesio_pci_init(void)
         goto err_mismatch;
     }
 
+    status = alloc_chrdev_region(&dev, 0, MAX_CHAR_DEVICES, ACCESIO_CHAR_DEVICE_NAME);
+
+    if (status)
+    {
+        aio_driver_err_print("alloc_chrdev_region failed\n");
+        goto err_mismatch;
+    }
+
+    accesio_char_major = MAJOR(dev);
+
+    accesio_char_class = class_create(THIS_MODULE, "accesio_class");
+
+    if (IS_ERR(accesio_char_class))
+    {
+        aio_driver_err_print("unable to create class: %ld", PTR_ERR(accesio_char_class));
+        goto err_register;
+    }
+
     status = pci_register_driver(&accesio_pci_driver);
     if(status)
     {
         aio_driver_err_print("registration failure %d", status);
-        goto err_register;
-    }
-
-    accesio_char_major = register_chrdev(0, ACCESIO_CHAR_DEVICE_NAME, &accesio_char_driver_fops);
-
-    if (accesio_char_major < 0)
-    {
-        aio_driver_err_print("unable to register_chardev");
         goto err_register;
     }
 
@@ -823,11 +837,13 @@ err_mismatch:
 
 static void accesio_pci_exit(void)
 {
-    aio_driver_debug_print("Enter");
+    aio_driver_debug_print("<<<");
     pci_unregister_driver(&accesio_pci_driver);
+    unregister_chrdev_region(MKDEV(accesio_char_major, 0), MAX_CHAR_DEVICES);
+    class_destroy(accesio_char_class);
+    accesio_char_class = NULL;
 }
-
 
 module_init(accesio_pci_init);
 module_exit(accesio_pci_exit);
-//MODULE_DEVICE_TABLE(pci, acces_pci_id_table);
+MODULE_DEVICE_TABLE(pci, acces_pci_id_table);
