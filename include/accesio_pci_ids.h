@@ -114,7 +114,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0100, .Model = "mPCIe-DIO-24S", .IRQ = &PCIE_2_STYLE,
     .pid= 0x0100,
-    .name = "mPCIe-DIO-24S",
+    .name = "mpcie-dio-24s",
     .isr = interrupt_pcie_style_2,
     .init = NULL,
     .enable = enable_pcie_style_2,
@@ -124,7 +124,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //pciDevId = 0x0101, .Model = "mPCIe-IDIO-8", .IRQ = &PCIE_2_STYLE,
     .pid= 0x0101,
-    .name = "mPCIe-IDIO-8",
+    .name = "mpcie-idio-8",
     .isr = interrupt_pcie_style_2,
     .init = NULL,
     .enable = enable_pcie_style_2,
@@ -134,7 +134,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0102, .Model = "mPCIe-IIRO-8", .IRQ = &PCIE_2_STYLE,
     .pid= 0x0102,
-    .name = "mPCIe-IIRO-8",
+    .name = "mpcie-iiro-8",
     .isr = interrupt_pcie_style_2,
     .init = NULL,
     .enable = enable_pcie_style_2,
@@ -144,7 +144,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0103, .Model = "mPCIe-IDIO-4", .IRQ = &PCIE_2_STYLE,
     .pid= 0x0103,
-    .name = "mPCIe-IDIO-4",
+    .name = "mpcie-idio-4",
     .isr = interrupt_pcie_style_2,
     .init = NULL,
     .enable = enable_pcie_style_2,
@@ -154,7 +154,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0104, .Model = "mPCIe-IIRO-4", .IRQ = &PCIE_2_STYLE,
     .pid= 0x0104,
-    .name = "mPCIe-IIRO-4",
+    .name = "mpcie-iiro-4",
     .isr = interrupt_pcie_style_2,
     .init = NULL,
     .enable = enable_pcie_style_2,
@@ -164,7 +164,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0105, .Model = "mPCIe-IDO-8", .IRQ = &PCIE_2_STYLE,
     .pid= 0x0105,
-    .name = "mPCIe-IDO-8",
+    .name = "mpcie-ido-8",
     .isr = interrupt_pcie_style_2,
     .init = NULL,
     .enable = enable_pcie_style_2,
@@ -174,7 +174,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
         //.pciDevId = 0x0106, .Model = "mPCIe-RO-8", .IRQ = &PCIE_2_STYLE,
     .pid= 0x0106,
-    .name = "mPCIe-RO-8",
+    .name = "mpcie-ro-8",
     .isr = interrupt_pcie_style_2,
     .init = NULL,
     .enable = enable_pcie_style_2,
@@ -184,7 +184,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
    //.pciDevId = 0x0107, .Model = "mPCIe-II-16", .IRQ = &PCIE_2_STYLE,
     .pid= 0x0107,
-    .name = "mPCIe-II-16",
+    .name = "mpcie-ii-16",
     .isr = interrupt_pcie_style_2,
    .init = NULL,
     .enable = enable_pcie_style_2,
@@ -194,7 +194,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
    //.pciDevId = 0x0108, .Model = "mPCIe-II-8", .IRQ = &PCIE_2_STYLE,
     .pid= 0x0108,
-    .name = "mPCIe-II-8",
+    .name = "mpcie-ii-8",
     .isr = interrupt_pcie_style_2,
    .init = NULL,
     .enable = enable_pcie_style_2,
@@ -204,7 +204,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0109, .Model = "mPCIe-II-4", .IRQ = &PCIE_2_STYLE,
     .pid= 0x0109,
-    .name = "mPCIe-II-4",
+    .name = "mpcie-ii-4",
     .isr = interrupt_pcie_style_2,
    .init = NULL,
     .enable = enable_pcie_style_2,
@@ -214,7 +214,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x010A, .Model = "mPCIe-QUAD-4", .IRQ = &PCIE_2_STYLE,
     .pid= 0x010A,
-    .name = "mPCIe-QUAD-4",
+    .name = "mpcie-quad-4",
     .isr = interrupt_pcie_style_2,
     .init = NULL,
     .enable = enable_pcie_style_2,
@@ -224,7 +224,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x010B, .Model = "mPCIe-QUAD-8", .IRQ = &PCIE_2_STYLE,
     .pid= 0x010B,
-    .name = "mPCIe-QUAD-8",
+    .name = "mpcie-quad-8",
     .isr = interrupt_pcie_style_2,
     .init = NULL,
     .enable = enable_pcie_style_2,
@@ -234,7 +234,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x010C, .Model = "mod-TBD", .IRQ = &NYI,
     .pid= 0x010C,
-    .name = "mod-TBD",
+    .name = "mod-tbd",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -244,7 +244,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x010D, .Model = "mod-TBD", .IRQ = &NYI,
     .pid= 0x010D,
-    .name = "mod-TBD",
+    .name = "mod-tbd",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -254,7 +254,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x010E, .Model = "mod-TBD", .IRQ = &NYI,
     .pid= 0x010E,
-    .name = "mod-TBD",
+    .name = "mod-tbd",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -264,7 +264,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x010F, .Model = "mod-TBD", .IRQ = &NYI,
     .pid= 0x010F,
-    .name = "mod-TBD",
+    .name = "mod-tbd",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -274,7 +274,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0508, .Model = "PCI-IDO-16A", .IRQ = &PCI_NO_IRQ_STYLE,
     .pid= 0x0508,
-    .name = "PCI-IDO-16A",
+    .name = "pci-ido-16a",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -284,7 +284,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0518, .Model = "PCI-IDO-32A", .IRQ = &PCI_NO_IRQ_STYLE,
     .pid= 0x0518,
-    .name = "PCI-IDO-32A",
+    .name = "pci-ido-32a",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -294,7 +294,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0520, .Model = "PCI-IDO-48", .IRQ = &PCI_NO_IRQ_STYLE,
     .pid= 0x0520,
-    .name = "PCI-IDO-48",
+    .name = "pci-ido-48",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -304,7 +304,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0521, .Model = "PCI-IDO-48A", .IRQ = &PCI_NO_IRQ_STYLE,
     .pid= 0x0521,
-    .name = "PCI-IDO-48A",
+    .name = "pci-ido-48a",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -314,7 +314,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0703, .Model = "PCIe-RO-4", .IRQ = &PCIE_3_STYLE,
     .pid= 0x0703,
-    .name = "PCIe-RO-4",
+    .name = "pcie-ro-4",
     .isr = interrupt_pcie_style_3,
     .init = NULL,
     .enable = enable_pcie_style_3,
@@ -324,7 +324,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x07C0, .Model = "PCIe-IDO-12", .IRQ = &NYI,
     .pid= 0x07C0,
-    .name = "PCIe-IDO-12",
+    .name = "pcie-ido-12",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -334,7 +334,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x07D0, .Model = "PCIe-IDO-24", .IRQ = &PCIE_6_STYLE,
     .pid= 0x07D0,
-    .name = "PCIe-IDO-24",
+    .name = "pcie-ido-24",
     .isr = interrupt_pcie_style_6,
     .init = NULL,
     .enable = enable_pcie_style_6,
@@ -344,7 +344,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0920, .Model = "PCI-IDI-48", .IRQ = &PCI_5_STYLE,
     .pid= 0x0920,
-    .name = "PCI-IDI-48",
+    .name = "pci-idi-48",
     .isr = interrupt_pci_style_5,
     .init = NULL,
     .enable = enable_pci_style_5,
@@ -354,7 +354,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0BC0, .Model = "PCIe-IDI-12A", .IRQ = &NYI,
     .pid= 0x0BC0,
-    .name = "PCIe-IDI-12A",
+    .name = "pcie-idi-12a",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -364,7 +364,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0BC1, .Model = "PCIe-IDI-12B", .IRQ = &NYI,
     .pid= 0x0BC1,
-    .name = "PCIe-IDI-12B",
+    .name = "pcie-idi-12b",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -374,7 +374,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0BD0, .Model = "PCIe-IDI-24", .IRQ = &PCIE_6_STYLE,
     .pid= 0x0BD0,
-    .name = "PCIe-IDI-24",
+    .name = "pcie-idi-24",
     .isr = interrupt_pcie_style_6,
     .init = NULL,
     .enable = enable_pcie_style_6,
@@ -384,7 +384,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0BD1, .Model = "PCIe-IDI-24B", .IRQ = &NYI,
     .pid= 0x0BD1,
-    .name = "PCIe-IDI-24B",
+    .name = "pcie-idi-24b",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -394,7 +394,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C40, .Model = "PCIe-DIO-144", .IRQ = &PCIE_1_STYLE,
     .pid= 0x0C40,
-    .name = "PCIe-DIO-144",
+    .name = "pcie-dio-144",
     .isr = interrupt_pcie_style_1,
     .init = NULL,
     .enable = enable_pcie_style_1,
@@ -404,7 +404,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C50, .Model = "PCI-DIO-24H", .IRQ = &PCI_10_STYLE,
     .pid= 0x0C50,
-    .name = "PCI-DIO-24H",
+    .name = "pci-dio-24h",
     .isr = interrupt_pci_style_10,
     .init = NULL,
     .enable = enable_pci_style_10,
@@ -414,7 +414,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C51, .Model = "PCI-DIO-24D", .IRQ = &PCI_10_STYLE,
     .pid= 0x0C51,
-    .name = "PCI-DIO-24D",
+    .name = "pci-dio-24d",
     .isr = interrupt_pci_style_10,
     .init = NULL,
     .enable = enable_pci_style_10,
@@ -424,7 +424,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C52, .Model = "PCIe-DIO-24", .IRQ = &PCIE_7_STYLE,
     .pid= 0x0C52,
-    .name = "PCIe-DIO-24",
+    .name = "pcie-dio-24",
     .isr = interrupt_pcie_style_7,
     .init = NULL,
     .enable = enable_pcie_style_7,
@@ -434,7 +434,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C53, .Model = "PCIe-DIO-24D/H", .IRQ = &PCIE_7_STYLE,
     .pid= 0x0C53,
-    .name = "PCIe-DIO-24D/H",
+    .name = "pcie-dio-24d/h",
     .isr = interrupt_pcie_style_7,
     .init = NULL,
     .enable = enable_pcie_style_7,
@@ -444,7 +444,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C54, .Model = "PCIe-DIO-24HC", .IRQ = &PCIE_4_STYLE,
     .pid= 0x0C54,
-    .name = "PCIe-DIO-24HC",
+    .name = "pcie-dio-24hc",
     .isr = interrupt_pcie_style_4,
     .init = NULL,
     .enable = enable_pcie_style_4,
@@ -454,7 +454,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C57, .Model = "mPCIe-DIO-24", .IRQ = &PCIE_4_STYLE,
     .pid= 0x0C57,
-    .name = "mPCIe-DIO-24",
+    .name = "mpcie-dio-24",
     .isr = interrupt_pcie_style_4,
     .init = NULL,
     .enable = enable_pcie_style_4,
@@ -464,7 +464,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C60, .Model = "PCI-DIO-48(H)", .IRQ = &PCI_8_STYLE,
     .pid= 0x0C60,
-    .name = "PCI-DIO-48(H)",
+    .name = "pci-dio-48(h)",
     .isr = interrupt_pci_style_8,
     .init = NULL,
     .enable = enable_pci_style_8,
@@ -474,7 +474,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C61, .Model = "PCIe-DIO-48", .IRQ = &PCIE_4_STYLE,
     .pid= 0x0C61,
-    .name = "PCIe-DIO-48",
+    .name = "pcie-dio-48",
     .isr = interrupt_pcie_style_4,
     .init = NULL,
     .enable = enable_pcie_style_4,
@@ -484,7 +484,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C62, .Model = "P104-DIO-48", .IRQ = &PCI_NO_IRQ_STYLE,
     .pid= 0x0C62,
-    .name = "P104-DIO-48",
+    .name = "p104-dio-48",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -494,7 +494,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C68, .Model = "PCI-DIO-72", .IRQ = &PCI_2_STYLE,
     .pid= 0x0C68,
-    .name = "PCI-DIO-72",
+    .name = "pci-dio-72",
     .isr = interrupt_pci_style_2,
     .init = NULL,
     .enable = enable_pci_style_2,
@@ -504,7 +504,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C69, .Model = "P104-DIO-96", .IRQ = &PCI_NO_IRQ_STYLE,
     .pid= 0x0C69,
-    .name = "P104-DIO-96",
+    .name = "p104-dio-96",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -514,7 +514,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C6A, .Model = "PCIe-DIO-72", .IRQ = &PCIE_1_STYLE,
     .pid= 0x0C6A,
-    .name = "PCIe-DIO-72",
+    .name = "pcie-dio-72",
     .isr = interrupt_pcie_style_1,
     .init = NULL,
     .enable = enable_pcie_style_1,
@@ -524,7 +524,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C70, .Model = "PCI-DIO-96", .IRQ = &PCI_2_STYLE,
     .pid= 0x0C70,
-    .name = "PCI-DIO-96",
+    .name = "pci-dio-96",
     .isr = interrupt_pci_style_2,
     .init = NULL,
     .enable = enable_pci_style_2,
@@ -534,7 +534,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C71, .Model = "PCIe-DIO-96", .IRQ = &PCIE_1_STYLE,
     .pid= 0x0C71,
-    .name = "PCIe-DIO-96",
+    .name = "pcie-dio-96",
     .isr = interrupt_pcie_style_1,
     .init = NULL,
     .enable = enable_pcie_style_1,
@@ -544,7 +544,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C78, .Model = "PCI-DIO-120", .IRQ = &PCI_2_STYLE,
     .pid= 0x0C78,
-    .name = "PCI-DIO-120",
+    .name = "pci-dio-120",
     .isr = interrupt_pci_style_2,
     .init = NULL,
     .enable = enable_pci_style_2,
@@ -554,7 +554,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0C79, .Model = "PCIe-DIO-120", .IRQ = &PCIE_1_STYLE,
     .pid= 0x0C79,
-    .name = "PCIe-DIO-120",
+    .name = "pcie-dio-120",
     .isr = interrupt_pcie_style_1,
     .init = NULL,
     .enable = enable_pcie_style_1,
@@ -564,7 +564,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0DC8, .Model = "PCI-IDIO-16", .IRQ = &PCI_3_STYLE,
     .pid= 0x0DC8,
-    .name = "PCI-IDIO-16",
+    .name = "pci-idio-16",
     .isr = interrupt_pci_style_3,
     .init = NULL,
     .enable = enable_pci_style_3,
@@ -574,7 +574,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E50, .Model = "PCI-DIO-24S", .IRQ = &PCI_8_STYLE,
     .pid= 0x0E50,
-    .name = "PCI-DIO-24S",
+    .name = "pci-dio-24s",
     .isr = interrupt_pci_style_8,
     .init = NULL,
     .enable = enable_pci_style_8,
@@ -584,7 +584,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E51, .Model = "PCI-DIO-24H(C)", .IRQ = &PCI_10_STYLE,
     .pid= 0x0E51,
-    .name = "PCI-DIO-24H(C)",
+    .name = "pci-dio-24h(c)",
     .isr = interrupt_pci_style_10,
     .init = NULL,
     .enable = enable_pci_style_10,
@@ -594,7 +594,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E52, .Model = "PCI-DIO-24D(C)", .IRQ = &PCI_10_STYLE,
     .pid= 0x0E52,
-    .name = "PCI-DIO-24D(C)",
+    .name = "pci-dio-24d(c)",
     .isr = interrupt_pci_style_10,
     .init = NULL,
     .enable = enable_pci_style_10,
@@ -604,7 +604,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E53, .Model = "PCIe-DIO-24S", .IRQ = &PCIE_4_STYLE,
     .pid= 0x0E53,
-    .name = "PCIe-DIO-24S",
+    .name = "pcie-dio-24s",
     .isr = interrupt_pcie_style_4,
     .init = NULL,
     .enable = enable_pcie_style_4,
@@ -614,7 +614,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E54, .Model = "PCIe-DIO-24DS/HS", .IRQ = &PCIE_4_STYLE,
     .pid= 0x0E54,
-    .name = "PCIe-DIO-24DS/HS",
+    .name = "pcie-dio-24ds/hs",
     .isr = interrupt_pcie_style_4,
     .init = NULL,
     .enable = enable_pcie_style_4,
@@ -624,7 +624,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E55, .Model = "PCIe-DIO-24DC", .IRQ = &PCIE_7_STYLE,
     .pid= 0x0E55,
-    .name = "PCIe-DIO-24DC",
+    .name = "pcie-dio-24dc",
     .isr = interrupt_pcie_style_7,
     .init = NULL,
     .enable = enable_pcie_style_7,
@@ -634,7 +634,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E56, .Model = "PCIe-DIO-24DCS", .IRQ = &PCIE_4_STYLE,
     .pid= 0x0E56,
-    .name = "PCIe-DIO-24DCS",
+    .name = "pcie-dio-24dcs",
     .isr = interrupt_pcie_style_4,
     .init = NULL,
     .enable = enable_pcie_style_4,
@@ -644,7 +644,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E57, .Model = "PCI-DIO-48HS", .IRQ = &PCIE_4_STYLE,
     .pid= 0x0E57,
-    .name = "PCI-DIO-48HS",
+    .name = "pci-dio-48hs",
     .isr = interrupt_pcie_style_4,
     .init = NULL,
     .enable = enable_pcie_style_4,
@@ -654,7 +654,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E60, .Model = "PCI-DIO-48S", .IRQ = &PCI_8_STYLE,
     .pid= 0x0E60,
-    .name = "PCI-DIO-48S",
+    .name = "pci-dio-48s",
     .isr = interrupt_pci_style_8,
     .init = NULL,
     .enable = enable_pci_style_8,
@@ -664,7 +664,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E61, .Model = "PCIe-DIO-48S", .IRQ = &PCIE_4_STYLE,
     .pid= 0x0E61,
-    .name = "PCIe-DIO-48S",
+    .name = "pcie-dio-48s",
     .isr = interrupt_pcie_style_4,
     .init = NULL,
     .enable = enable_pcie_style_4,
@@ -674,7 +674,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {//TODO: Find PCI_11_STYLE operations. Was NYI in previous table
     //.pciDevId = 0x0E62, .Model = "P104-DIO-48S", .IRQ = &PCI_11_STYLE,
     .pid= 0x0E62,
-    .name = "P104-DIO-48S",
+    .name = "p104-dio-48s",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -684,7 +684,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E63, .Model = "PCIe-EZ-BLEND", .IRQ = &NYI,
     .pid= 0x0E63,
-    .name = "PCIe-EZ-BLEND",
+    .name = "pcie-ez-blend",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -694,7 +694,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E6A, .Model = "PCIe-DIO-72S", .IRQ = &PCIE_1_STYLE,
     .pid= 0x0E6A,
-    .name = "PCIe-DIO-72S",
+    .name = "pcie-dio-72s",
     .isr = interrupt_pcie_style_1,
     .init = NULL,
     .enable = enable_pcie_style_1,
@@ -704,7 +704,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E71, .Model = "PCIe-DIO-96S", .IRQ = &PCIE_1_STYLE,
     .pid= 0x0E71,
-    .name = "PCIe-DIO-96S",
+    .name = "pcie-dio-96s",
     .isr = interrupt_pcie_style_1,
     .init = NULL,
     .enable = enable_pcie_style_1,
@@ -714,7 +714,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E79, .Model = "PCIe-DIO-120S", .IRQ = &PCIE_1_STYLE,
     .pid= 0x0E79,
-    .name = "PCIe-DIO-120S",
+    .name = "pcie-dio-120s",
     .isr = interrupt_pcie_style_1,
     .init = NULL,
     .enable = enable_pcie_style_1,
@@ -724,7 +724,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0F00, .Model = "PCI-IIRO-8", .IRQ = &PCI_3_STYLE,
     .pid= 0x0F00,
-    .name = "PCI-IIRO-8",
+    .name = "pci-iiro-8",
     .isr = interrupt_pci_style_3,
     .init = NULL,
     .enable = enable_pci_style_3,
@@ -734,7 +734,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0F01, .Model = "LPCI-IIRO-8", .IRQ = &PCI_3_STYLE,
     .pid= 0x0F01,
-    .name = "LPCI-IIRO-8",
+    .name = "lpci-iiro-8",
     .isr = interrupt_pci_style_3,
     .init = NULL,
     .enable = enable_pci_style_3,
@@ -744,7 +744,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0F02, .Model = "PCIe-IIRO-8", .IRQ = &PCIE_3_STYLE,
     .pid= 0x0F02,
-    .name = "PCIe-IIRO-8",
+    .name = "pcie-iiro-8",
     .isr = interrupt_pcie_style_3,
     .init = NULL,
     .enable = enable_pcie_style_3,
@@ -754,7 +754,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0F08, .Model = "PCI-IIRO-16", .IRQ = &PCI_3_STYLE,
     .pid= 0x0F08,
-    .name = "PCI-IIRO-16",
+    .name = "pci-iiro-16",
     .isr = interrupt_pci_style_3,
     .init = NULL,
     .enable = enable_pci_style_3,
@@ -764,7 +764,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0F09, .Model = "PCIe-IIRO-16", .IRQ = &PCIE_3_STYLE,
     .pid= 0x0F09,
-    .name = "PCIe-IIRO-16",
+    .name = "pcie-iiro-16",
     .isr = interrupt_pcie_style_3,
     .init = NULL,
     .enable = enable_pcie_style_3,
@@ -774,7 +774,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0FC0, .Model = "PCIe-IDIO-12", .IRQ = &PCIE_6_STYLE,
     .pid= 0x0FC0,
-    .name = "PCIe-IDIO-12",
+    .name = "pcie-idio-12",
     .isr = interrupt_pcie_style_6,
     .init = NULL,
     .enable = enable_pcie_style_6,
@@ -784,7 +784,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0FC1, .Model = "PCIe-IDI-12", .IRQ = &PCIE_6_STYLE,
     .pid= 0x0FC1,
-    .name = "PCIe-IDI-12",
+    .name = "pcie-idi-12",
     .isr = interrupt_pcie_style_6,
     .init = NULL,
     .enable = enable_pcie_style_6,
@@ -794,7 +794,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0FC2, .Model = "PCIe-IDO-12", .IRQ = &PCIE_6_STYLE,
     .pid= 0x0FC2,
-    .name = "PCIe-IDO-12",
+    .name = "pcie-ido-12",
     .isr = interrupt_pcie_style_6,
     .init = NULL,
     .enable = enable_pcie_style_6,
@@ -804,7 +804,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0FD0, .Model = "PCIe-IDIO-24", .IRQ = &PCIE_6_STYLE,
     .pid= 0x0FD0,
-    .name = "PCIe-IDIO-24",
+    .name = "pcie-idio-24",
     .isr = interrupt_pcie_style_6,
     .init = NULL,
     .enable = enable_pcie_style_6,
@@ -814,7 +814,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0FD1, .Model = "PCIe-IDIO-24B", .IRQ = &NYI,
     .pid= 0x0FD1,
-    .name = "PCIe-IDIO-24B",
+    .name = "pcie-idio-24b",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -824,7 +824,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x2230, .Model = "PCI-QUAD-8", .IRQ = &PCI_13_STYLE,
     .pid= 0x2230,
-    .name = "PCI-QUAD-8",
+    .name = "pci-quad-8",
     .isr = interrupt_pci_style_13,
     .init = NULL,
     .enable = enable_pci_style_13,
@@ -834,7 +834,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x2231, .Model = "PCI-QUAD-4", .IRQ = &PCI_13_STYLE,
     .pid= 0x2231,
-    .name = "PCI-QUAD-4",
+    .name = "pci-quad-4",
     .isr = interrupt_pci_style_13,
     .init = NULL,
     .enable = enable_pci_style_13,
@@ -844,7 +844,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x22C0, .Model = "PCI-WDG-CSM", .IRQ = &PCI_7_STYLE,
     .pid= 0x22C0,
-    .name = "PCI-WDG-CSM",
+    .name = "pci-wdg-csm",
     .isr = interrupt_pci_style_7,
     .init = NULL,
     .enable = enable_pci_style_7,
@@ -854,7 +854,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x25C0, .Model = "P104-WDG-E", .IRQ = &PCI_6_STYLE,
     .pid= 0x25C0,
-    .name = "P104-WDG-E",
+    .name = "p104-wdg-e",
     .isr = interrupt_pci_style_6,
     .init = NULL,
     .enable = enable_pci_style_6,
@@ -864,7 +864,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x2C50, .Model = "PCI-DIO-96CT", .IRQ = &PCI_2_STYLE,
     .pid= 0x2C50,
-    .name = "PCI-DIO-96CT",
+    .name = "pci-dio-96ct",
     .isr = interrupt_pci_style_2,
     .init = NULL,
     .enable = enable_pci_style_2,
@@ -874,7 +874,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x2C58, .Model = "PCI-DIO-96C3", .IRQ = &PCI_2_STYLE,
     .pid= 0x2C58,
-    .name = "PCI-DIO-96C3",
+    .name = "pci-dio-96c3",
     .isr = interrupt_pci_style_2,
     .init = NULL,
     .enable = enable_pci_style_2,
@@ -884,7 +884,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x2C59, .Model = "PCIe-DIO-96C3", .IRQ = &PCIE_1_STYLE,
     .pid= 0x2C59,
-    .name = "PCIe-DIO-96C3",
+    .name = "pcie-dio-96c3",
     .isr = interrupt_pcie_style_1,
     .init = NULL,
     .enable = enable_pcie_style_1,
@@ -894,7 +894,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x2C70, .Model = "PCI-DIO-96CT", .IRQ = &NYI,
     .pid= 0x2C70,
-    .name = "PCI-DIO-96CT",
+    .name = "pci-dio-96ct",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -904,7 +904,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x2E50, .Model = "mPCIe-DIO-24A", .IRQ = &PCIE_4_STYLE,
     .pid= 0x2E50,
-    .name = "mPCIe-DIO-24A",
+    .name = "mpcie-dio-24a",
     .isr = interrupt_pcie_style_4,
     .init = NULL,
     .enable = enable_pcie_style_4,
@@ -914,7 +914,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x2EE0, .Model = "PCIe-DIO24S-CTR12", .IRQ = &PCIE_5_STYLE,
     .pid= 0x2EE0,
-    .name = "PCIe-DIO24S-CTR12",
+    .name = "pcie-dio24s-ctr12",
     .isr = interrupt_pcie_style_5,
     .init = NULL,
     .enable = enable_pcie_style_5,
@@ -924,7 +924,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x2FC0, .Model = "P104-WDG-CSM", .IRQ = &PCI_6_STYLE,
     .pid= 0x2FC0,
-    .name = "P104-WDG-CSM",
+    .name = "p104-wdg-csm",
     .isr = interrupt_pci_style_6,
     .init = NULL,
     .enable = enable_pci_style_6,
@@ -934,7 +934,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x2FC1, .Model = "P104-WDG-CSMA", .IRQ = &PCI_6_STYLE,
     .pid= 0x2FC1,
-    .name = "P104-WDG-CSMA",
+    .name = "p104-wdg-csma",
     .isr = interrupt_pci_style_6,
     .init = NULL,
     .enable = enable_pci_style_6,
@@ -944,7 +944,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x4890, .Model = "PCIe-DA12-2", .IRQ = &PCIE_8_STYLE,
     .pid= 0x4890,
-    .name = "PCIe-DA12-2",
+    .name = "pcie-da12-2",
     .isr = interrupt_pcie_style_8,
     .init = NULL,
     .enable = enable_pcie_style_8,
@@ -954,7 +954,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x4898, .Model = "PCIe-DA12-4", .IRQ = &PCIE_8_STYLE,
     .pid= 0x4898,
-    .name = "PCIe-DA12-4",
+    .name = "pcie-da12-4",
     .isr = interrupt_pcie_style_8,
     .init = NULL,
     .enable = enable_pcie_style_8,
@@ -964,7 +964,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x48a0, .Model = "PCIe-DA12-6", .IRQ = &PCIE_8_STYLE,
     .pid= 0x48a0,
-    .name = "PCIe-DA12-6",
+    .name = "pcie-da12-6",
     .isr = interrupt_pcie_style_8,
     .init = NULL,
     .enable = enable_pcie_style_8,
@@ -974,7 +974,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x48a8, .Model = "PCIe-DA12-8", .IRQ = &PCIE_8_STYLE,
     .pid= 0x48a8,
-    .name = "PCIe-DA12-8",
+    .name = "pcie-da12-8",
     .isr = interrupt_pcie_style_8,
     .init = NULL,
     .enable = enable_pcie_style_8,
@@ -984,7 +984,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x48b0, .Model = "PCIe-DA12-16", .IRQ = &PCIE_8_STYLE,
     .pid= 0x48b0,
-    .name = "PCIe-DA12-16",
+    .name = "pcie-da12-16",
     .isr = interrupt_pcie_style_8,
     .init = NULL,
     .enable = enable_pcie_style_8,
@@ -994,7 +994,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x48d0, .Model = "PCIe-DA16-2", .IRQ = &PCIE_8_STYLE,
     .pid= 0x48d0,
-    .name = "PCIe-DA16-2",
+    .name = "pcie-da16-2",
     .isr = interrupt_pcie_style_8,
     .init = NULL,
     .enable = enable_pcie_style_8,
@@ -1004,7 +1004,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x48d8, .Model = "PCIe-DA16-4", .IRQ = &PCIE_8_STYLE,
     .pid= 0x48d8,
-    .name = "PCIe-DA16-4",
+    .name = "pcie-da16-4",
     .isr = interrupt_pcie_style_8,
     .init = NULL,
     .enable = enable_pcie_style_8,
@@ -1014,7 +1014,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x48e0, .Model = "PCIe-DA16-6", .IRQ = &PCIE_8_STYLE,
     .pid= 0x48e0,
-    .name = "PCIe-DA16-6",
+    .name = "pcie-da16-6",
     .isr = interrupt_pcie_style_8,
     .init = NULL,
     .enable = enable_pcie_style_8,
@@ -1024,7 +1024,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x48e8, .Model = "PCIe-DA16-8", .IRQ = &PCIE_8_STYLE,
     .pid= 0x48e8,
-    .name = "PCIe-DA16-8",
+    .name = "pcie-da16-8",
     .isr = interrupt_pcie_style_8,
     .init = NULL,
     .enable = enable_pcie_style_8,
@@ -1034,7 +1034,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x48f0, .Model = "PCIe-DA16-16", .IRQ = &PCIE_8_STYLE,
     .pid= 0x48f0,
-    .name = "PCIe-DA16-16",
+    .name = "pcie-da16-16",
     .isr = interrupt_pcie_style_8,
     .init = NULL,
     .enable = enable_pcie_style_8,
@@ -1044,7 +1044,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x5ED0, .Model = "PCI-DAC", .IRQ = &NYI,
     .pid= 0x5ED0,
-    .name = "PCI-DAC",
+    .name = "pci-dac",
     .isr = NULL,
     .init = NULL,
     .enable = NULL,
@@ -1054,7 +1054,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x6C90, .Model = "PCI-DA12-2", .IRQ = &PCI_4_STYLE,
     .pid= 0x6C90,
-    .name = "PCI-DA12-2",
+    .name = "pci-da12-2",
     .isr = interrupt_pci_style_4,
     .init = NULL,
     .enable = enable_pci_style_4,
@@ -1064,7 +1064,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x6C98, .Model = "PCI-DA12-4", .IRQ = &PCI_4_STYLE,
     .pid= 0x6C98,
-    .name = "PCI-DA12-4",
+    .name = "pci-da12-4",
     .isr = interrupt_pci_style_4,
     .init = NULL,
     .enable = enable_pci_style_4,
@@ -1074,7 +1074,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x6CA0, .Model = "PCI-DA12-6", .IRQ = &PCI_4_STYLE,
     .pid= 0x6CA0,
-    .name = "PCI-DA12-6",
+    .name = "pci-da12-6",
     .isr = interrupt_pci_style_4,
     .init = NULL,
     .enable = enable_pci_style_4,
@@ -1084,7 +1084,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x6CA8, .Model = "PCI-DA12-8", .IRQ = &PCI_4_STYLE,
     .pid= 0x6CA8,
-    .name = "PCI-DA12-8",
+    .name = "pci-da12-8",
     .isr = interrupt_pci_style_4,
     .init = NULL,
     .enable = enable_pci_style_4,
@@ -1094,7 +1094,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x6CA9, .Model = "PCI-DA12-8V", .IRQ = &PCI_4_STYLE,
     .pid= 0x6CA9,
-    .name = "PCI-DA12-8V",
+    .name = "pci-da12-8v",
     .isr = interrupt_pci_style_4,
     .init = NULL,
     .enable = enable_pci_style_4,
@@ -1104,7 +1104,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x6CB0, .Model = "PCI-DA12-16", .IRQ = &PCI_4_STYLE,
     .pid= 0x6CB0,
-    .name = "PCI-DA12-16",
+    .name = "pci-da12-16",
     .isr = interrupt_pci_style_4,
     .init = NULL,
     .enable = enable_pci_style_4,
@@ -1114,7 +1114,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x6CB1, .Model = "PCI-DA12-16V", .IRQ = &PCI_4_STYLE,
     .pid= 0x6CB1,
-    .name = "PCI-DA12-16V",
+    .name = "pci-da12-16v",
     .isr = interrupt_pci_style_4,
     .init = NULL,
     .enable = enable_pci_style_4,
@@ -1124,7 +1124,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0xACA8, .Model = "PCI-AI12-16", .IRQ = &PCI_12_STYLE,
     .pid= 0xACA8,
-    .name = "PCI-AI12-16",
+    .name = "pci-ai12-16",
     .isr = interrupt_pci_style_12,
     .init = NULL,
     .enable = enable_pci_style_12,
@@ -1134,7 +1134,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0xACA9, .Model = "PCI-AI12-16A", .IRQ = &PCI_12_STYLE,
     .pid= 0xACA9,
-    .name = "PCI-AI12-16A",
+    .name = "pci-ai12-16a",
     .isr = interrupt_pci_style_12,
     .init = NULL,
     .enable = enable_pci_style_12,
@@ -1144,7 +1144,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0xECA8, .Model = "PCI-AIO12-16", .IRQ = &PCI_12_STYLE,
     .pid= 0xECA8,
-    .name = "PCI-AIO12-16",
+    .name = "pci-aio12-16",
     .isr = interrupt_pci_style_12,
     .init = NULL,
     .enable = enable_pci_style_12,
@@ -1154,7 +1154,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0xECA9, .Model = "PCI-A12-16", .IRQ = &PCI_12_STYLE,
     .pid= 0xECA9,
-    .name = "PCI-A12-16",
+    .name = "pci-a12-16",
     .isr = interrupt_pci_style_12,
     .init = NULL,
     .enable = enable_pci_style_12,
@@ -1164,7 +1164,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0xECAA, .Model = "PCI-A12-16A", .IRQ = &PCI_12_STYLE,
     .pid= 0xECAA,
-    .name = "PCI-A12-16A",
+    .name = "pci-a12-16a",
     .isr = interrupt_pci_style_12,
     .init = NULL,
     .enable = enable_pci_style_12,
@@ -1174,7 +1174,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0xECE8, .Model = "LPCI-A16-16A", .IRQ = &PCI_9_STYLE,
     .pid= 0xECE8,
-    .name = "LPCI-A16-16A",
+    .name = "lpci-a16-16a",
     .isr = interrupt_pci_style_9,
     .init = NULL,
     .enable = enable_pci_style_9,
@@ -1184,7 +1184,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0xECE9, .Model = "LPCI-AIO16A", .IRQ = &PCI_1_STYLE,
     .pid= 0xECE9,
-    .name = "LPCI-AIO16A",
+    .name = "lpci-aio16a",
     .isr = interrupt_pci_style_1,
     .init = NULL,
     .enable = enable_pci_style_1,
@@ -1196,7 +1196,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   //If none fit then use function names that are different format
   {
     .pid = 0xC2EF,
-    .name = "PCIe-ADIO16-16FDS",
+    .name = "pcie-adio16-16fds",
     .isr = interrupt_adio16f_style,
     .init = NULL,
     .enable = enable_adio16f_style,
@@ -1206,7 +1206,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   },
   {
     .pid = 0xC2EC,
-    .name = "PCIe-ADIO16-16F",
+    .name = "pcie-adio16-16f",
     .isr = interrupt_adio16f_style,
     .init = NULL,
     .enable = enable_adio16f_style,
@@ -1216,7 +1216,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   },
   {
     .pid = 0xC2ED,
-    .name = "PCIe-ADIO16-16A",
+    .name = "pcie-adio16-16a",
     .isr = interrupt_adio16f_style,
     .init = NULL,
     .enable = enable_adio16f_style,
@@ -1226,7 +1226,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   },
   {
     .pid = 0xC2EE,
-    .name = "PCIe-ADIO16-16E",
+    .name = "pcie-adio16-16e",
     .isr = interrupt_adio16f_style,
     .init = NULL,
     .enable = enable_adio16f_style,
@@ -1236,7 +1236,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   },
   {
     .pid = 0x82EC,
-    .name = "PCIe-ADI16-16F",
+    .name = "pcie-adi16-16f",
     .isr = interrupt_adio16f_style,
     .init = NULL,
     .enable = enable_adio16f_style,
@@ -1246,7 +1246,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   },
   {
     .pid = 0x82ED,
-    .name = "PCIe-ADI16-16A",
+    .name = "pcie-adi16-16a",
     .isr = interrupt_adio16f_style,
     .init = NULL,
     .enable = enable_adio16f_style,
@@ -1256,7 +1256,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   },
   {
     .pid = 0x82EE,
-    .name = "PCIe-ADI16-16E",
+    .name = "pcie-adi16-16e",
     .isr = interrupt_adio16f_style,
     .init = NULL,
     .enable = enable_adio16f_style,
@@ -1266,7 +1266,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   },
   {
     .pid = 0xC25C,
-    .name = "PCIe-ADIO12-16A",
+    .name = "pcie-adio12-16a",
     .isr = interrupt_adio16f_style,
     .init = NULL,
     .enable = enable_adio16f_style,
@@ -1276,7 +1276,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   },
   {
     .pid = 0xC25D,
-    .name = "PCIe-ADIO12-16",
+    .name = "pcie-adio12-16",
     .isr = interrupt_adio16f_style,
     .init = NULL,
     .enable = enable_adio16f_style,
@@ -1286,7 +1286,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   },
   {
     .pid = 0xC25E,
-    .name = "PCIe-ADIO12-16E",
+    .name = "pcie-adio12-16e",
     .isr = interrupt_adio16f_style,
     .init = NULL,
     .enable = enable_adio16f_style,
@@ -1296,7 +1296,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   },
   {
     .pid = 0x825C,
-    .name = "PCIe-ADI12-16A",
+    .name = "pcie-adi12-16a",
     .isr = interrupt_adio16f_style,
     .init = NULL,
     .enable = enable_adio16f_style,
@@ -1306,7 +1306,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   },
   {
     .pid = 0x825D,
-    .name = "PCIe-ADI12-16F",
+    .name = "pcie-adi12-16f",
     .isr = interrupt_adio16f_style,
     .init = NULL,
     .enable = enable_adio16f_style,
@@ -1316,7 +1316,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   },
   {
     .pid = 0x825E,
-    .name = "PCIe-ADI12-16F",
+    .name = "pcie-adi12-16f",
     .isr = interrupt_adio16f_style,
     .init = NULL,
     .enable = enable_adio16f_style,

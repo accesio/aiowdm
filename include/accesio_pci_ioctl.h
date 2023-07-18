@@ -14,7 +14,7 @@
 struct accesio_pci_card_descriptor
 {
   uint16_t device_id;
-  unsigned short int port_base;
+  size_t port_base;
   size_t port_size; //TODO: Better name?
   unsigned long name_size;
   char name[64];

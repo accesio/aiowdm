@@ -565,20 +565,107 @@ struct file_operations accesio_char_driver_fops = {
     .release = accesio_char_driver_release,
 };
 
-long accesio_char_driver_unlocked_ioctl (struct file *, unsigned int, unsigned long)
+
+long ioctl_ACCESIO_PCI_CARD_DESCRIPTOR_GET (struct accesio_pci_device_context *context, unsigned long arg)
 {
+    int bytes_remaining = 0;
+    int status = 0;
+    struct accesio_pci_card_descriptor descriptor;
+    aio_driver_debug_print("<<< context = %p, arg = %lX", context, arg);
+    descriptor.device_id = context->descriptor->pid;
+    descriptor.port_base = (size_t)pci_resource_start(context->pci_dev, context->default_bar);
+    descriptor.port_size = pci_resource_len(context->pci_dev, context->default_bar);
+    aio_driver_dev_print("descriptor port_base = 0x%X", descriptor.port_base);
+    descriptor.name_size = strlen(context->descriptor->name);
+    strcpy(descriptor.name, context->descriptor->name);
+    for (int i = 0 ; i < PCI_STD_NUM_BARS ; i++) descriptor.bars[i] = (size_t)pci_resource_start(context->pci_dev, i);
+
+    bytes_remaining = copy_to_user((struct accesio_pci_card_descriptor *) arg, &descriptor, sizeof (struct accesio_pci_card_descriptor));
+
+    if (bytes_remaining)
+    {
+        aio_driver_err_print("copy_to_user return %d", bytes_remaining);
+        status = -EIO;
+    }
+
+    aio_driver_debug_print(">>>");
+    return status;
+}
+
+long ioctl_ACCESIO_PCI_IRQ_ENABLE (struct accesio_pci_device_context *context, unsigned long arg)
+{
+    aio_driver_debug_print("<<<");
     aio_driver_err_print("Stub called");
+    aio_driver_debug_print(">>>");
     return -1;
+}
+
+long ioctl_ACCESIO_PCI_IRQ_DISABLE (struct accesio_pci_device_context *context, unsigned long arg)
+{
+    aio_driver_debug_print("<<<");
+    aio_driver_err_print("Stub called");
+    aio_driver_debug_print(">>>");
+    return -1;
+}
+
+long ioctl_ACCESIO_PCI_IRQ_WAIT (struct accesio_pci_device_context *context, unsigned long arg)
+{
+    aio_driver_debug_print("<<<");
+    aio_driver_err_print("Stub called");
+    aio_driver_debug_print(">>>");
+    return -1;
+}
+
+long ioctl_ACCESIO_PCI_IRQ_WAIT_CANCLE (struct accesio_pci_device_context *context, unsigned long arg)
+{
+    aio_driver_debug_print("<<<");
+    aio_driver_err_print("Stub called");
+    aio_driver_debug_print(">>>");
+    return -1;
+}
+
+
+
+
+long accesio_char_driver_unlocked_ioctl (struct file *filp, unsigned int cmd, unsigned long arg)
+{
+    int status = -1;
+    struct accesio_pci_device_context *context;
+    aio_driver_debug_print("<<<");
+    context = (struct accesio_pci_device_context*)filp->private_data;
+
+    switch (cmd)
+    {
+    case ACCESIO_PCI_CARD_DESCRIPTOR_GET:
+        status = ioctl_ACCESIO_PCI_CARD_DESCRIPTOR_GET(context, arg);
+        break;
+    case ACCESIO_PCI_IRQ_ENABLE:
+        break;
+    case ACCESIO_PCI_IRQ_DISABLE:
+        break;
+    case ACCESIO_PCI_IRQ_WAIT:
+        break;
+    case ACCESIO_PCI_IRQ_WAIT_CANCLE:
+        break;
+    }
+    aio_driver_debug_print(">>>");
+    return status;
 }
 int accesio_char_driver_mmap (struct file *, struct vm_area_struct *)
 {
+    aio_driver_debug_print("<<<");
     aio_driver_err_print("Stub called");
+    aio_driver_debug_print(">>>");
     return -1;
 }
-int accesio_char_driver_open (struct inode *, struct file *)
+int accesio_char_driver_open (struct inode * inode, struct file *filp)
 {
-    aio_driver_err_print("Stub called");
-    return -1;
+    struct accesio_pci_device_context *ddata;
+    aio_driver_debug_print("<<<");
+    ddata = container_of(inode->i_cdev, struct accesio_pci_device_context, cdev);
+    filp->private_data = ddata;
+    aio_driver_debug_print(">>>");
+    return 0;
 }
 int accesio_char_driver_release (struct inode *, struct file *)
 {
@@ -698,10 +785,14 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
 
     context->dev = MKDEV(accesio_char_major, accesio_char_next_minor);
 
+    cdev_init (&(context->cdev), &accesio_char_driver_fops);
+    cdev_add(&(context->cdev), context->dev, 1);
+
     context->device = device_create(accesio_char_class,
                     NULL,
                     context->dev,
                     context,
+                    "accesio_pci/%s",
                     context->descriptor->name);
 
     if (IS_ERR(context->device))
