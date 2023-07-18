@@ -5,6 +5,7 @@
 #include <linux/cdev.h>
 #include <linux/uaccess.h>
 #include <linux/device.h>
+#include <linux/version.h>>
 
 #include "accesio_pci_ids.h"
 #include "accesio_pci_ioctl.h"
@@ -873,6 +874,26 @@ void accesio_pci_driver_shutdown (struct pci_dev *dev)
 
 #pragma GCC diagnostic pop
 
+//The name of this variable is exposed to userspace via /etc/modprobe.d
+static int dev_mode = 0;
+module_param(dev_mode, int, 0);
+
+/* Configure the default /dev/{devicename} permissions */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 2, 0)
+static char *accesio_pci_devnode(struct device *dev, umode_t *mode)
+#else
+static char *accesio_pci_devnode(const struct device *dev, umode_t *mode)
+#endif
+{
+    //if our dev_mode isn't 0 then it's a value received from userspace
+    if (mode && (0 != dev_mode ))
+    {
+        *mode = dev_mode;
+        aio_driver_debug_print ("dev_mode = 0x%x", dev_mode);
+    }
+  return NULL;
+}
+
 static int accesio_pci_init(void)
 {
     int status = 0;
@@ -911,6 +932,8 @@ static int accesio_pci_init(void)
         aio_driver_err_print("unable to create class: %ld", PTR_ERR(accesio_char_class));
         goto err_register;
     }
+
+    accesio_char_class->devnode = accesio_pci_devnode;
 
     status = pci_register_driver(&accesio_pci_driver);
     if(status)
