@@ -557,7 +557,12 @@ long accesio_char_driver_unlocked_ioctl (struct file *, unsigned int, unsigned l
 int accesio_char_driver_mmap (struct file *, struct vm_area_struct *);
 int accesio_char_driver_open (struct inode *, struct file *);
 int accesio_char_driver_release (struct inode *, struct file *);
-
+long ioctl_ACCESIO_PCI_CARD_DESCRIPTOR_GET (struct accesio_pci_device_context *context, unsigned long arg);
+long ioctl_ACCESIO_PCI_IRQ_ENABLE (struct accesio_pci_device_context *context, unsigned long arg);
+long ioctl_ACCESIO_PCI_IRQ_DISABLE (struct accesio_pci_device_context *context, unsigned long arg);
+long ioctl_ACCESIO_PCI_IRQ_WAIT (struct accesio_pci_device_context *context, unsigned long arg);
+long ioctl_ACCESIO_PCI_IRQ_WAIT_CANCEL (struct accesio_pci_device_context *context, unsigned long arg);
+long ioctl_ACCESIO_PCI_REGISTER_IO (struct accesio_pci_device_context *context, unsigned long arg);
 
 struct file_operations accesio_char_driver_fops = {
     .unlocked_ioctl = accesio_char_driver_unlocked_ioctl,
