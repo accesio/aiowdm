@@ -614,7 +614,7 @@ static struct accesio_pci_device_descriptor accesio_pci_device_descriptors[] =
   {
     //.pciDevId = 0x0E54, .Model = "PCIe-DIO-24DS/HS", .IRQ = &PCIE_4_STYLE,
     .pid= 0x0E54,
-    .name = "pcie-dio-24ds/hs",
+    .name = "pcie-dio-24ds-hs",
     .isr = interrupt_pcie_style_4,
     .init = NULL,
     .enable = enable_pcie_style_4,

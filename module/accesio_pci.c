@@ -5,7 +5,7 @@
 #include <linux/cdev.h>
 #include <linux/uaccess.h>
 #include <linux/device.h>
-#include <linux/version.h>>
+#include <linux/version.h>
 
 #include "accesio_pci_ids.h"
 #include "accesio_pci_ioctl.h"
@@ -321,7 +321,7 @@ irqreturn_t interrupt_pci_style_10 (int irq, void *context)
     return IRQ_HANDLED;
 }
 
-//PCI_11 style undefined in old header. 
+//PCI_11 style undefined in old header.
 //TODO: Find manuals for PCI style 11
 // struct aio_irq_descriptor PCI_11_STYLE = /* S4C&04|E<00|8#6|E<FF	 */
 
@@ -553,8 +553,8 @@ static int accesio_char_major;
 static int accesio_char_next_minor;  //used to minor number when calling
 
 
-long accesio_char_driver_unlocked_ioctl (struct file *, unsigned int, unsigned long); 
-int accesio_char_driver_mmap (struct file *, struct vm_area_struct *); 
+long accesio_char_driver_unlocked_ioctl (struct file *, unsigned int, unsigned long);
+int accesio_char_driver_mmap (struct file *, struct vm_area_struct *);
 int accesio_char_driver_open (struct inode *, struct file *);
 int accesio_char_driver_release (struct inode *, struct file *);
 
@@ -576,7 +576,7 @@ long ioctl_ACCESIO_PCI_CARD_DESCRIPTOR_GET (struct accesio_pci_device_context *c
     descriptor.device_id = context->descriptor->pid;
     descriptor.port_base = (size_t)pci_resource_start(context->pci_dev, context->default_bar);
     descriptor.port_size = pci_resource_len(context->pci_dev, context->default_bar);
-    aio_driver_dev_print("descriptor port_base = 0x%X", descriptor.port_base);
+    aio_driver_dev_print("descriptor port_base = 0x%lX", descriptor.port_base);
     descriptor.name_size = strlen(context->descriptor->name);
     strcpy(descriptor.name, context->descriptor->name);
     for (int i = 0 ; i < PCI_STD_NUM_BARS ; i++) descriptor.bars[i] = (size_t)pci_resource_start(context->pci_dev, i);
@@ -617,7 +617,7 @@ long ioctl_ACCESIO_PCI_IRQ_WAIT (struct accesio_pci_device_context *context, uns
     return -1;
 }
 
-long ioctl_ACCESIO_PCI_IRQ_WAIT_CANCLE (struct accesio_pci_device_context *context, unsigned long arg)
+long ioctl_ACCESIO_PCI_IRQ_WAIT_CANCEL (struct accesio_pci_device_context *context, unsigned long arg)
 {
     aio_driver_debug_print("<<<");
     aio_driver_err_print("Stub called");
@@ -625,7 +625,73 @@ long ioctl_ACCESIO_PCI_IRQ_WAIT_CANCLE (struct accesio_pci_device_context *conte
     return -1;
 }
 
+long ioctl_ACCESIO_PCI_REGISTER_IO (struct accesio_pci_device_context *context, unsigned long arg)
+{
+    struct accesio_pci_register_io_context register_io_context;
+    size_t bytes_remaining;
 
+    aio_driver_debug_print("<<<");
+
+
+    bytes_remaining = copy_from_user(&register_io_context,
+                                    (struct accesio_pci_register_io_context *)arg,
+                                    sizeof(struct accesio_pci_register_io_context));
+
+    if (bytes_remaining)
+    {
+        aio_driver_err_print("bytes_remaining = 0x%lx", bytes_remaining);
+        return -EIO;
+    }
+
+    aio_driver_dev_print("offset: 0x%x", register_io_context.offset);
+
+    if (register_io_context.read)
+    {
+        switch(register_io_context.size)
+        {
+            case sizeof(uint8_t):
+                register_io_context.data.byte = ioread8(context->bar_bases[context->default_bar] + register_io_context.offset);
+                aio_driver_dev_print("data.byte = 0x%x", register_io_context.data.byte);
+                break;
+            case sizeof(uint16_t):
+                register_io_context.data.word = ioread16(context->bar_bases[context->default_bar] + register_io_context.offset);
+                aio_driver_dev_print("data.word = 0x%x", register_io_context.data.word);
+                break;
+            case sizeof(uint32_t):
+                register_io_context.data.dword = ioread32(context->bar_bases[context->default_bar] + register_io_context.offset);
+                aio_driver_dev_print("data.dword = 0x%x", register_io_context.data.dword);
+                break;
+        }
+
+        bytes_remaining = copy_to_user((struct accesio_pci_register_io_context *)arg,
+                                        &register_io_context,
+                                        sizeof(struct accesio_pci_register_io_context));
+
+        if (bytes_remaining)
+        {
+            aio_driver_err_print("bytes_remaining = 0x%lx", bytes_remaining);
+            return -EIO;
+        }
+    }
+    else
+    {
+                switch(register_io_context.size)
+        {
+            case sizeof(uint8_t):
+                iowrite8(register_io_context.data.byte, context->bar_bases[context->default_bar] + register_io_context.offset);
+                break;
+            case sizeof(uint16_t):
+                iowrite16(register_io_context.data.word, context->bar_bases[context->default_bar] + register_io_context.offset);
+                break;
+            case sizeof(uint32_t):
+                iowrite32(register_io_context.data.dword, context->bar_bases[context->default_bar] + register_io_context.offset);
+                break;
+        }
+    }
+
+    aio_driver_debug_print(">>");
+    return 0;
+}
 
 
 long accesio_char_driver_unlocked_ioctl (struct file *filp, unsigned int cmd, unsigned long arg)
@@ -646,7 +712,10 @@ long accesio_char_driver_unlocked_ioctl (struct file *filp, unsigned int cmd, un
         break;
     case ACCESIO_PCI_IRQ_WAIT:
         break;
-    case ACCESIO_PCI_IRQ_WAIT_CANCLE:
+    case ACCESIO_PCI_IRQ_WAIT_CANCEL:
+        break;
+    case ACCESIO_PCI_REGISTER_IO:
+        status = ioctl_ACCESIO_PCI_REGISTER_IO(context, arg);
         break;
     }
     aio_driver_debug_print(">>>");
@@ -711,7 +780,6 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
         aio_driver_err_print("pci_enable_device failed: %d", status);
         goto err_enable;
     }
-        
 
     status = pci_request_regions(dev, "accesio_pci");
 
@@ -752,7 +820,7 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
 
     for (i = 0 ; i < PCI_STD_NUM_BARS ; i++)
     {
-        if (pci_resource_flags(context->pci_dev, i) & 
+        if (pci_resource_flags(context->pci_dev, i) &
             (IORESOURCE_IO | IORESOURCE_MEM))
         {
             context->bar_bases[i] = pci_iomap(context->pci_dev, i, 0);
@@ -760,6 +828,7 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
             {
                 aio_driver_err_print("Unable to map bar %d", i);
             }
+            aio_driver_dev_print ("Mapped BAR %d at 0x%llx", i, pci_resource_start(context->pci_dev, i));
         }
         if (pci_resource_flags(context->pci_dev, i) & IORESOURCE_IO)
         {
@@ -767,6 +836,22 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
             //in StartDevice()
             context->default_bar = 1;
         }
+
+    }
+
+    switch (context->descriptor->pid)
+    {
+        //TODO: Create a field in the descriptor for a BAR override.
+        case 0xc2e8: case 0xc2e9: case 0xc2ea:
+        case 0x82e8: case 0x82e9: case 0x82ea:
+        case 0xc258: case 0xc259: case 0xc25a:
+        case 0x8258: case 0x8259: case 0x825a:
+        case 0x1100: case 0xc2ef:
+            context->default_bar = 2;
+            aio_driver_debug_print("Overriding default bar by PID");
+            break;
+        default:
+            break;
     }
 
     spin_lock_init(&context->irq_lock);
@@ -813,6 +898,7 @@ err_request_regions:
 err_enable:
     return status;
 }
+
 void accesio_pci_driver_remove (struct pci_dev *dev)
 {
     struct accesio_pci_device_context *context;
@@ -889,7 +975,7 @@ static char *accesio_pci_devnode(const struct device *dev, umode_t *mode)
     if (mode && (0 != dev_mode ))
     {
         *mode = dev_mode;
-        aio_driver_debug_print ("dev_mode = 0x%x", dev_mode);
+        aio_driver_debug_print ("dev_mode = 0%o", dev_mode);
     }
   return NULL;
 }
@@ -925,7 +1011,11 @@ static int accesio_pci_init(void)
 
     accesio_char_major = MAJOR(dev);
 
-    accesio_char_class = class_create(THIS_MODULE, "accesio_class");
+#if LINUX_VERSION_CODE > KERNEL_VERSION(6, 4, 0) || RULES_DONT_APPLY_TO_RH
+  accesio_char_class = class_create("accesio_class");
+#else
+  accesio_char_class = class_create(THIS_MODULE, "accesio_class");
+#endif
 
     if (IS_ERR(accesio_char_class))
     {

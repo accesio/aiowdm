@@ -31,6 +31,7 @@
 				do { if (AIO_VERBOSE) printf ("%s:%d:%s(): " fmt "\n" , __FILE__, \
 																__LINE__, __func__, ##__VA_ARGS__); } while (0)
 
+namespace AIOWDM {
 
 struct card
 {
@@ -92,6 +93,7 @@ long int GetNumCards(void)
 
 unsigned int QueryCardInfo(long CardNum, unsigned long *pDeviceID, unsigned long *pBase, unsigned long *pNameSize, unsigned char *pName)
 {
+	if (CardNum >= num_cards) return -EINVAL;
 	if (pDeviceID) *pDeviceID = cards[CardNum].descriptor->device_id;
 	if (pBase) *pBase = cards[CardNum].descriptor->port_base;
 	if ((NULL == pNameSize) && (NULL != pName)) return -EINVAL;
@@ -102,3 +104,102 @@ unsigned int QueryCardInfo(long CardNum, unsigned long *pDeviceID, unsigned long
 	}
   return 0;
 }
+
+uint8_t RelInPortB (uint32_t CardNum, uint32_t Register)
+{
+	int status = 0;
+	libaiowdm_debug_print("<<<");
+	struct accesio_pci_register_io_context context = {0};
+	context.size = sizeof(uint8_t);
+	context.read = true;
+	context.offset = Register;
+	status = ioctl(cards[CardNum].fd, ACCESIO_PCI_REGISTER_IO, &context);
+
+	if (status)
+	{
+		libaiowdm_err_print("status=%d", status);
+	}
+	libaiowdm_debug_print(">>>");
+
+	return context.data.byte;
+}
+uint16_t RelInPort (uint32_t CardNum, uint32_t Register)
+{
+	int status = 0;
+	libaiowdm_debug_print("<<<");
+	struct accesio_pci_register_io_context context = {0};
+	context.size = sizeof(uint16_t);
+	context.read = true;
+	context.offset = Register;
+	status = ioctl(cards[CardNum].fd, ACCESIO_PCI_REGISTER_IO, &context);
+
+	if (status)
+	{
+		libaiowdm_err_print("status=%d", status);
+	}
+	libaiowdm_debug_print(">>>");
+
+	return context.data.word;
+}
+
+uint32_t RelInPortL (uint32_t CardNum, uint32_t Register)
+{
+	int status = 0;
+	libaiowdm_debug_print("<<<");
+	struct accesio_pci_register_io_context context = {0};
+	context.size = sizeof(uint32_t);
+	context.read = true;
+	context.offset = Register;
+	status = ioctl(cards[CardNum].fd, ACCESIO_PCI_REGISTER_IO, &context);
+
+	if (status)
+	{
+		libaiowdm_err_print("status=%d", status);
+	}
+	libaiowdm_debug_print(">>>");
+
+	return context.data.dword;
+}
+
+int RelOutPortB (uint32_t CardNum, uint32_t Register, uint8_t Value)
+{
+	int status = 0;
+	libaiowdm_debug_print("<<<");
+	struct accesio_pci_register_io_context context = {0};
+	context.read = false;
+	context.size = sizeof(uint8_t);
+	context.offset = Register;
+	context.data.byte = Value;
+	status = ioctl(cards[CardNum].fd, ACCESIO_PCI_REGISTER_IO, &context);
+	libaiowdm_debug_print(">>>");
+	return status;
+}
+
+int RelOutPort (uint32_t CardNum, uint32_t Register, uint16_t Value)
+{
+	int status = 0;
+	libaiowdm_debug_print("<<<");
+	struct accesio_pci_register_io_context context = {0};
+	context.read = false;
+	context.size = sizeof(uint16_t);
+	context.offset = Register;
+	context.data.word = Value;
+	status = ioctl(cards[CardNum].fd, ACCESIO_PCI_REGISTER_IO, &context);
+	libaiowdm_debug_print(">>>");
+	return status;
+}
+int RelOutPortL (uint32_t CardNum, uint32_t Register, uint32_t Value)
+{
+	int status = 0;
+	libaiowdm_debug_print("<<<");
+	struct accesio_pci_register_io_context context = {0};
+	context.read = false;
+	context.size = sizeof(uint32_t);
+	context.offset = Register;
+	context.data.dword = Value;
+	status = ioctl(cards[CardNum].fd, ACCESIO_PCI_REGISTER_IO, &context);
+	libaiowdm_debug_print(">>>");
+	return status;
+}
+
+} //namespace AIOWDM

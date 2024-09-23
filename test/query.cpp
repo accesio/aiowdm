@@ -4,7 +4,7 @@
 
 int main (int argc, char **argv)
 {
-    int NumCards = GetNumCards();
+    int NumCards = AIOWDM::GetNumCards();
     long unsigned int device_id;
     long unsigned int base;
     unsigned char name[512];
@@ -13,7 +13,7 @@ int main (int argc, char **argv)
 
     printf("NumCards = %d\n", NumCards);
 
-    status = QueryCardInfo(0, &device_id, &base, &name_size, name);
+    status = AIOWDM::QueryCardInfo(0, &device_id, &base, &name_size, name);
 
     printf("device_id = %X, base = %p, name_size = %d, name = %s\n", device_id, base, name_size, name);
 

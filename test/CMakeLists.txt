@@ -11,3 +11,6 @@ endif(AIO_VERBOSE)
 
 add_executable(query query.cpp)
 target_link_libraries(query $<TARGET_OBJECTS:aiowdm>)
+
+add_executable(RegisterIo RegisterIo.cpp)
+target_link_libraries(RegisterIo $<TARGET_OBJECTS:aiowdm>)
