@@ -40,7 +40,7 @@ struct card
 };
 
 static struct card cards[32]; //TODO: Put MAX_CHAR_DEVICES in ioctl header
-static int num_cards;
+static uint32_t num_cards;
 static bool init_complete;
 
 void AiowdmInit () __attribute__((constructor));
@@ -91,17 +91,14 @@ long int GetNumCards(void)
   return num_cards;
 }
 
-unsigned int QueryCardInfo(long CardNum, unsigned long *pDeviceID, unsigned long *pBase, unsigned long *pNameSize, unsigned char *pName)
+unsigned int QueryCardInfo(uint32_t CardNum, unsigned long *pDeviceID, unsigned long *pBase, unsigned long *pNameSize, unsigned char *pName)
 {
 	if (CardNum >= num_cards) return -EINVAL;
 	if (pDeviceID) *pDeviceID = cards[CardNum].descriptor->device_id;
 	if (pBase) *pBase = cards[CardNum].descriptor->port_base;
-	if ((NULL == pNameSize) && (NULL != pName)) return -EINVAL;
-	if ((pNameSize != NULL) && (*pNameSize == 0)) *pNameSize = cards[CardNum].descriptor->name_size;
-	else
-	{
-		strncpy ((char*)pName, cards[CardNum].descriptor->name, *pNameSize);
-	}
+	if ((nullptr == pNameSize) && (nullptr != pName)) return -EINVAL;
+	if ((pNameSize != nullptr) && (*pNameSize == 0)) *pNameSize = cards[CardNum].descriptor->name_size;
+	if (pName) strncpy ((char*)pName, cards[CardNum].descriptor->name, *pNameSize);
   return 0;
 }
 
@@ -200,6 +197,32 @@ int RelOutPortL (uint32_t CardNum, uint32_t Register, uint32_t Value)
 	status = ioctl(cards[CardNum].fd, ACCESIO_PCI_REGISTER_IO, &context);
 	libaiowdm_debug_print(">>>");
 	return status;
+}
+
+int WaitForIRQ (uint32_t CardNum)
+{
+	int status = 0;
+	libaiowdm_debug_print("<<<");
+	status = ioctl(cards[CardNum].fd, ACCESIO_PCI_IRQ_WAIT);
+	libaiowdm_debug_print(">>>");
+	return status;
+}
+
+int AbortRequest (uint32_t CardNum)
+{
+	int status = 0;
+	libaiowdm_debug_print("<<<");
+	status = ioctl(cards[CardNum].fd, ACCESIO_PCI_IRQ_WAIT_CANCEL);
+	libaiowdm_debug_print(">>>");
+	return status;
+}
+
+int COSWaitForIRQ (uint32_t CardNum, uint32_t PPIs, void *pData)
+{
+	libaiowdm_debug_print("<<<");
+	libaiowdm_err_print("Stub called");
+	libaiowdm_debug_print(">>>");
+	return -1;
 }
 
 } //namespace AIOWDM

@@ -4,9 +4,6 @@
 
 #include "aiowdm.h"
 
-//TODO: Add optional parameter for cardnum
-//TODO: Add parameter for size
-
 void usage ()
 {
   printf("Usage: RegisterIo [-c <card_num>][-s <size>] offset [<value>]\n");

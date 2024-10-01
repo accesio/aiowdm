@@ -49,6 +49,9 @@ struct accesio_pci_device_context
     void                                *bar_bases[6];
     union accesio_pci_isr_context       *accesio_pci_isr_context;
     spinlock_t                           irq_lock;
+    wait_queue_head_t                    wait_queue;
+    int                                  waiting_for_irq;
+    int                                  irq_cancelled;
 };
 
 
@@ -72,6 +75,18 @@ struct accesio_pci_device_context
 #define accesio_handler_ddata() \
     struct accesio_pci_device_context *ddata = NULL; \
     ddata = (struct accesio_pci_device_context *)context; \
+
+#define accesio_notify_user() \
+    spin_lock(&ddata->irq_lock); \
+    if (ddata->waiting_for_irq) { \
+        ddata->waiting_for_irq = 0; \
+        spin_unlock(&ddata->irq_lock); \
+        wake_up_interruptible (&ddata->wait_queue); \
+    } \
+    else \
+    { \
+        spin_unlock(&ddata->irq_lock); \
+    } \
 
 #define accesio_leave_if_not_latched_pci() {\
     __u8 byte; \
@@ -533,11 +548,26 @@ void disable_adio16f_style (void *context)
     aio_driver_err_print("STUB called!");
 }
 
+//All the bits that can indicate an irq occurred
+#define ADIO16F_INTERRUPT_MASK 0x81FF0000
+
 irqreturn_t interrupt_adio16f_style (int irq, void *context)
 {
+    aio_driver_dev_print("<<<");
     accesio_handler_ddata();
-    aio_driver_err_print("STUB called");
-    return IRQ_NONE;
+    uint32_t irq_status = ioread32(ddata->bar_bases[2] + 0x40);
+    aio_driver_dev_print("irq_status: 0x%x", irq_status);
+    if ((irq_status & ADIO16F_INTERRUPT_MASK) == 0)
+    {
+        return IRQ_NONE;
+    }
+    iowrite32(irq_status & ADIO16F_INTERRUPT_MASK, ddata->bar_bases[2] + 0x40);
+
+    accesio_notify_user()
+
+    aio_driver_dev_print(">>>");
+
+    return IRQ_HANDLED;
 }
 
 #pragma endregion irq_ops
@@ -560,8 +590,8 @@ int accesio_char_driver_release (struct inode *, struct file *);
 long ioctl_ACCESIO_PCI_CARD_DESCRIPTOR_GET (struct accesio_pci_device_context *context, unsigned long arg);
 long ioctl_ACCESIO_PCI_IRQ_ENABLE (struct accesio_pci_device_context *context, unsigned long arg);
 long ioctl_ACCESIO_PCI_IRQ_DISABLE (struct accesio_pci_device_context *context, unsigned long arg);
-long ioctl_ACCESIO_PCI_IRQ_WAIT (struct accesio_pci_device_context *context, unsigned long arg);
-long ioctl_ACCESIO_PCI_IRQ_WAIT_CANCEL (struct accesio_pci_device_context *context, unsigned long arg);
+long ioctl_ACCESIO_PCI_IRQ_WAIT (struct accesio_pci_device_context *context);
+long ioctl_ACCESIO_PCI_IRQ_WAIT_CANCEL (struct accesio_pci_device_context *context);
 long ioctl_ACCESIO_PCI_REGISTER_IO (struct accesio_pci_device_context *context, unsigned long arg);
 
 struct file_operations accesio_char_driver_fops = {
@@ -614,20 +644,50 @@ long ioctl_ACCESIO_PCI_IRQ_DISABLE (struct accesio_pci_device_context *context, 
     return -1;
 }
 
-long ioctl_ACCESIO_PCI_IRQ_WAIT (struct accesio_pci_device_context *context, unsigned long arg)
+long ioctl_ACCESIO_PCI_IRQ_WAIT (struct accesio_pci_device_context *context)
 {
+    unsigned long flags;
+
     aio_driver_debug_print("<<<");
-    aio_driver_err_print("Stub called");
+    spin_lock_irqsave(&context->irq_lock, flags);
+    if (context->waiting_for_irq == 1) {
+        spin_unlock_irqrestore(&context->irq_lock, flags);
+        aio_driver_err_print("returning -EALREADY");
+        return -EALREADY;
+    } else {
+        context->waiting_for_irq = 1;
+        context->irq_cancelled = 0;
+    }
+    spin_unlock_irqrestore(&context->irq_lock, flags);
+
+    wait_event_interruptible(context->wait_queue, context->waiting_for_irq == 0);
+
+    if (context->irq_cancelled == 1) {
+        aio_driver_err_print("returning -CANCELED");
+        return -ECANCELED;
+    }
     aio_driver_debug_print(">>>");
-    return -1;
+    return 0;
 }
 
-long ioctl_ACCESIO_PCI_IRQ_WAIT_CANCEL (struct accesio_pci_device_context *context, unsigned long arg)
+long ioctl_ACCESIO_PCI_IRQ_WAIT_CANCEL (struct accesio_pci_device_context *context)
 {
+    unsigned long flags;
+
     aio_driver_debug_print("<<<");
-    aio_driver_err_print("Stub called");
+    spin_lock_irqsave(&context->irq_lock, flags);
+
+    if (context->waiting_for_irq == 0) {
+        spin_unlock_irqrestore(&context->irq_lock, flags);
+        return -EALREADY;
+    }
+
+    context->irq_cancelled = 1;
+    context->waiting_for_irq = 0;
+    spin_unlock_irqrestore(&context->irq_lock, flags);
+    wake_up_interruptible(&context->wait_queue);
     aio_driver_debug_print(">>>");
-    return -1;
+    return 0;
 }
 
 long ioctl_ACCESIO_PCI_REGISTER_IO (struct accesio_pci_device_context *context, unsigned long arg)
@@ -716,8 +776,10 @@ long accesio_char_driver_unlocked_ioctl (struct file *filp, unsigned int cmd, un
     case ACCESIO_PCI_IRQ_DISABLE:
         break;
     case ACCESIO_PCI_IRQ_WAIT:
+        status = ioctl_ACCESIO_PCI_IRQ_WAIT(context);
         break;
     case ACCESIO_PCI_IRQ_WAIT_CANCEL:
+        status = ioctl_ACCESIO_PCI_IRQ_WAIT_CANCEL(context);
         break;
     case ACCESIO_PCI_REGISTER_IO:
         status = ioctl_ACCESIO_PCI_REGISTER_IO(context, arg);
@@ -794,7 +856,7 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
         goto err_request_regions;
     }
 
-    context = kmalloc(sizeof(struct accesio_pci_device_context), GFP_KERNEL);
+    context = kzalloc(sizeof(struct accesio_pci_device_context), GFP_KERNEL);
 
     if (NULL == context)
     {
@@ -859,8 +921,11 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
             break;
     }
 
-    spin_lock_init(&context->irq_lock);
+    //TODO: Not all cards have IRQs? If that is true then need to add field to 
+    // accesio_pci_device_descriptor     
     status = request_irq(context->pci_dev->irq, context->descriptor->isr, IRQF_SHARED, "accesio_pci", context);
+    spin_lock_init(&context->irq_lock);
+    init_waitqueue_head(&context->wait_queue);
 
     if (status)
     {
