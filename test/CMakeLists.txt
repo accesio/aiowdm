@@ -17,3 +17,7 @@ target_link_libraries(RegisterIo $<TARGET_OBJECTS:aiowdm>)
 
 add_executable(pcie-adio16-16fds-irq pcie-adio16-16fds-irq.cpp)
 target_link_libraries(pcie-adio16-16fds-irq $<TARGET_OBJECTS:aiowdm>)
+
+add_executable(pcie-adio16-16fds-dma pcie-adio16-16fds-dma.cpp)
+target_link_libraries(pcie-adio16-16fds-dma $<TARGET_OBJECTS:aiowdm>)
+target_compile_options(pcie-adio16-16fds-dma PUBLIC -Wno-pointer-arith)

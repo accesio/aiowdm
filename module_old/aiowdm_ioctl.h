@@ -36,3 +36,5 @@ struct aiowdm_card_info
 #define AIOWDM_IRQ_DISABLE _IO(AIOWDM_MAGIC, 3)
 #define AIOWDM_IRQ_WAIT _IO(AIOWDM_MAGIC, 4)
 #define AIOWDM_IRQ_WAIT_CANCLE _IO(AIOWDM_MAGIC, 5)
+
+

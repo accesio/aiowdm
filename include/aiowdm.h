@@ -19,7 +19,16 @@ int RelOutPortL (uint32_t CardNum, uint32_t Register, uint32_t Value);
 
 int WaitForIRQ (uint32_t CardNum);
 int AbortRequest (uint32_t CardNum);
+// returns the value from the interrupt status register during the most recent
+// interrupt on applicable cards
 int COSWaitForIRQ (uint32_t CardNum, uint32_t PPIs, void *pData);
+
+
+//proposed APIs below. not finalized
+
+int DmaBufferInit (uint32_t CardNum, uint8_t NumSlots, ssize_t SlotSize, volatile uint8_t *Base);
+int DmaDataReady (uint32_t CardNum, int *StartIndex, int *Slots, int *DataDiscarded);
+int DmaDataDone (uint32_t CardNum, int Slots);
 
 
 } //names AIOWDM

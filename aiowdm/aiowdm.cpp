@@ -5,6 +5,9 @@
 #include <sys/ioctl.h>
 #include <dirent.h>
 #include <errno.h>
+#include <cstring>
+#include <cerrno>
+#include <sys/mman.h>
 
 #define AIOWDM_DEV_PATH "/dev/accesio/"
 
@@ -223,6 +226,45 @@ int COSWaitForIRQ (uint32_t CardNum, uint32_t PPIs, void *pData)
 	libaiowdm_err_print("Stub called");
 	libaiowdm_debug_print(">>>");
 	return -1;
+}
+
+int DmaBufferInit (uint32_t CardNum, uint8_t NumSlots, ssize_t SlotSize, volatile uint8_t *Base)
+{
+	int status;
+	libaiowdm_debug_print("<<<");
+	struct aiowdm_dma_init dma_init = {0};
+	dma_init.num_slots = NumSlots;
+	dma_init.slot_size = SlotSize;
+	status = ioctl(cards[CardNum].fd, ACCESIO_PCI_DMA_INIT, &dma_init);
+	if (!(status)) {
+		Base = (uint8_t *) mmap(nullptr, NumSlots + SlotSize, PROT_READ | PROT_WRITE , MAP_SHARED, cards[CardNum].fd, ACCESIO_MMAP_OFFSET_DMA * sysconf(_SC_PAGE_SIZE));
+		if (Base == MAP_FAILED) {
+			status = errno;
+			libaiowdm_err_print("mmap failed in %s", std::strerror(errno));
+		}
+	}
+	libaiowdm_debug_print(">>>");
+	return status;
+}
+int DmaDataReady (uint32_t CardNum, int *StartIndex, int *Slots, int *DataDiscarded)
+{
+	int status;
+	libaiowdm_debug_print("<<<");
+	struct aiowdm_dma_data_ready data_ready = {0};
+	status = ioctl(cards[CardNum].fd, ACCESIO_PCI_DMA_DATA_READY, &data_ready);
+	*StartIndex = data_ready.start_index;
+	*Slots = data_ready.slots;
+	*DataDiscarded = data_ready.data_discarded;
+	libaiowdm_debug_print(">>>");
+	return status;
+}
+int DmaDataDone (uint32_t CardNum, int Slots)
+{
+	int status;
+	libaiowdm_debug_print("<<<");
+	status = ioctl(cards[CardNum].fd, ACCESIO_PCI_DMA_DATA_DONE, Slots);
+	libaiowdm_debug_print(">>>");
+	return status;
 }
 
 } //namespace AIOWDM
