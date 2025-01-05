@@ -416,7 +416,7 @@
 //     case AIOWDM_IRQ_WAIT:
 //       status = ioctl_AIOWDM_IRQ_WAIT (filp, arg);
 //       break;
-//     case AIOWDM_IRQ_WAIT_CANCLE:
+//     case AIOWDM_IRQ_WAIT_CANCEL:
 //       status = ioctl_AIOWDM_IRQ_WAIT_CANCEL (filp, arg);
 //       break;
 //     default:

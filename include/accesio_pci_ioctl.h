@@ -70,4 +70,4 @@ struct aiowdm_dma_data_ready
 #define ACCESIO_PCI_DMA_DATA_READY _IOR(ACCESIO_PCI_MAGIC, 8, struct aiowdm_dma_data_ready *)
 
 //Tell the driver how many slots we're done processing
-#define ACCESIO_PCI_DMA_DATA_DONE _IO(ACCESIO_PCI_MAGIC, 9)
+#define ACCESIO_PCI_DMA_DATA_TAKEN _IO(ACCESIO_PCI_MAGIC, 9)

@@ -552,7 +552,8 @@ void disable_adio16f_style (void *context)
 
 //All the bits that can indicate an irq occurred
 #define ADIO16F_INTERRUPT_MASK 0x81FF0000
-#define ADIO16F_FAF ( 1 << 20 )
+#define ADIO16F_FAF BIT(20)
+
 
 irqreturn_t interrupt_adio16f_style (int irq, void *context)
 {
@@ -562,51 +563,68 @@ irqreturn_t interrupt_adio16f_style (int irq, void *context)
     aio_driver_dev_print("irq_status: 0x%x", irq_status);
     if ((irq_status & ADIO16F_INTERRUPT_MASK) == 0)
     {
+        aio_driver_debug_print("wasn't me");
         return IRQ_NONE;
     }
 
     if (!(irq_status & ADIO16F_FAF)) {
-        struct dma_isr_context *context =
-            (struct dma_isr_context *)&ddata->accesio_pci_isr_context.dma_context;
-        dma_addr_t base = context->dma_addr;
+        struct dma_isr_context *dma_context =
+            (struct dma_isr_context *)&ddata->isr_context->dma_context;
+        dma_addr_t base = dma_context->dma_addr;
 
-        spin_lock(&context->dma_data_lock);
+        spin_lock(&dma_context->dma_data_lock);
 
-        if (unlikely(context->dma_first_valid == -1))
+        aio_driver_dev_print("got the spinlock");
+        aio_driver_dev_print("data: %p", ddata);
+        aio_driver_dev_print("ddata->accesio_pci_isr_context: %p", ddata->accesio_pci_isr_context);
+
+        aio_driver_dev_print("dma_context->dma_addr: 0x%x", dma_context->dma_addr);
+        aio_driver_dev_print("dma_context->dma_virt_addr: 0x%x", dma_context->dma_virt_addr);
+        aio_driver_dev_print("dma_context->dma_last_buffer: 0x%x", dma_context->dma_last_buffer);
+        aio_driver_dev_print("dma_context->dma_first_valid: 0x%x", dma_context->dma_first_valid);
+        aio_driver_dev_print("dma_context->dma_num_slots: 0x%x", dma_context->dma_num_slots);
+        aio_driver_dev_print("dma_context->dma_slot_size: 0x%x", dma_context->dma_slot_size);
+        aio_driver_dev_print("dma_context->dma_data_discarded: 0x%x", dma_context->dma_data_discarded);
+        aio_driver_dev_print("dma_context->dma_data_lock: 0x%x", dma_context->dma_data_lock);
+
+
+        if (unlikely(dma_context->dma_first_valid == -1))
         {
-            context->dma_first_valid = 0;
-            context->dma_last_buffer = 0;
+            dma_context->dma_first_valid = 0;
+            dma_context->dma_last_buffer = 0;
         }
         else
         {
-            context->dma_last_buffer++;
-            context->dma_last_buffer %= context->dma_num_slots;
+            dma_context->dma_last_buffer++;
+            dma_context->dma_last_buffer %= dma_context->dma_num_slots;
 
-            if (context->dma_last_buffer == context->dma_first_valid)
+            if (dma_context->dma_last_buffer == dma_context->dma_first_valid)
             {
                 aio_driver_err_print("ISR: data discarded");
-                context->dma_last_buffer--;
-                if (context->dma_last_buffer < 0)
-                    context->dma_last_buffer = context->dma_num_slots - 1;
-                context->dma_data_discarded++;
+                dma_context->dma_last_buffer--;
+                if (dma_context->dma_last_buffer < 0)
+                    dma_context->dma_last_buffer = dma_context->dma_num_slots - 1;
+                dma_context->dma_data_discarded++;
             }
         }
 
-        spin_unlock(&context->dma_data_lock);
+        spin_unlock(&dma_context->dma_data_lock);
+        aio_driver_dev_print("released spinlock");
 
-        base += context->dma_slot_size * context->dma_last_buffer;
+
+        base += dma_context->dma_slot_size * dma_context->dma_last_buffer;
 
         iowrite32(base & 0xffffffff, ddata->bar_bases[0] + 0x10);
         iowrite32(base >> 32, ddata->bar_bases[0] + 0x14);
-        iowrite32(context->dma_slot_size, ddata->bar_bases[0] + 0x18);
+        iowrite32(dma_context->dma_slot_size, ddata->bar_bases[0] + 0x18);
         iowrite32(4, ddata->bar_bases + 0x22);
     }
 
 
     ddata->irq_return = irq_status;
-    iowrite32(irq_status & ADIO16F_INTERRUPT_MASK, ddata->bar_bases[1] + 0x40);
+    iowrite32(irq_status & ADIO16F_INTERRUPT_MASK, ddata->bar_bases[0] + 0x40);
     //have to perform a read to avoid duplicate IRQs
-    irq_status = ioread32(ddata->bar_bases[1] + 0x40);
+    irq_status = ioread32(ddata->bar_bases[0] + 0x40);
 
     accesio_notify_user()
 
@@ -640,7 +658,7 @@ long ioctl_ACCESIO_PCI_IRQ_WAIT_CANCEL (struct accesio_pci_device_context *conte
 long ioctl_ACCESIO_PCI_REGISTER_IO (struct accesio_pci_device_context *context, unsigned long arg);
 long ioctl_ACCESIO_PCI_DMA_INIT (struct accesio_pci_device_context *context, unsigned long arg);
 long ioctl_ACCESIO_PCI_DMA_DATA_READY (struct accesio_pci_device_context *context, unsigned long arg);
-long ioctl_ACCESIO_PCI_DMA_DATA_DONE (struct accesio_pci_device_context *context, unsigned long arg);
+long ioctl_ACCESIO_PCI_DMA_DATA_TAKEN (struct accesio_pci_device_context *context, unsigned long arg);
 
 struct file_operations accesio_char_driver_fops = {
     .unlocked_ioctl = accesio_char_driver_unlocked_ioctl,
@@ -810,9 +828,21 @@ long ioctl_ACCESIO_PCI_REGISTER_IO (struct accesio_pci_device_context *context, 
 
 long ioctl_ACCESIO_PCI_DMA_INIT (struct accesio_pci_device_context *context, unsigned long arg)
 {
-    struct aiowdm_dma_init *dma_init = (struct aiowdm_dma_init *)arg;
+    struct aiowdm_dma_init dma_init = {0};
     struct dma_isr_context *dma_context = &context->isr_context->dma_context;
     int status = 0;
+
+    aio_driver_debug_print("<<<");
+    aio_driver_dev_print("dma_context: %p", dma_context);
+
+    status = copy_from_user(&dma_init,
+                            (struct aiowdm_dma_init *)arg,
+                            sizeof(struct aiowdm_dma_init));
+    if (status)
+    {
+        aio_driver_err_print("copy_from_user %ul bytes not copied", status);
+        return -EIO;
+    }
 
     if (dma_context->dma_virt_addr != NULL) {
         dma_free_coherent(&context->pci_dev->dev,
@@ -826,9 +856,11 @@ long ioctl_ACCESIO_PCI_DMA_INIT (struct accesio_pci_device_context *context, uns
         dma_context->dma_slot_size = 0;
     }
 
-    dma_context->dma_num_slots = dma_init->num_slots;
-    dma_context->dma_slot_size = dma_init->slot_size;
+    dma_context->dma_num_slots = dma_init.num_slots;
+    dma_context->dma_slot_size = dma_init.slot_size;
 
+    aio_driver_dev_print("About to call dma_alloc_coherent");
+    
     dma_context->dma_virt_addr = dma_alloc_coherent(&context->pci_dev->dev,
                         dma_context->dma_num_slots * dma_context->dma_slot_size,
                         &dma_context->dma_addr,
@@ -840,49 +872,72 @@ long ioctl_ACCESIO_PCI_DMA_INIT (struct accesio_pci_device_context *context, uns
     dma_context->dma_first_valid = -1;
     dma_context->dma_data_discarded = 0;
 
+      aio_driver_dev_print("dma_context->dma_addr: 0x%x", dma_context->dma_addr);
+      aio_driver_dev_print("dma_context->dma_virt_addr: 0x%x", dma_context->dma_virt_addr);
+      aio_driver_dev_print("dma_context->dma_last_buffer: 0x%x", dma_context->dma_last_buffer);
+      aio_driver_dev_print("dma_context->dma_first_valid: 0x%x", dma_context->dma_first_valid);
+      aio_driver_dev_print("dma_context->dma_num_slots: 0x%x", dma_context->dma_num_slots);
+      aio_driver_dev_print("dma_context->dma_slot_size: 0x%x", dma_context->dma_slot_size);
+      aio_driver_dev_print("dma_context->dma_data_discarded: 0x%x", dma_context->dma_data_discarded);
+      aio_driver_dev_print("dma_context->dma_data_lock: 0x%x", dma_context->dma_data_lock);
+    
+
+    aio_driver_debug_print("<<<");
     return status;
 }
 
 long ioctl_ACCESIO_PCI_DMA_DATA_READY (struct accesio_pci_device_context *context, unsigned long arg)
 {
-    struct aiowdm_dma_data_ready *dma_data_ready = (struct aiowdm_dma_data_ready *)arg;
+    struct aiowdm_dma_data_ready dma_data_ready = {0};
     struct dma_isr_context *dma_context = &context->isr_context->dma_context;
     unsigned long flags;
     int last_valid;
+    int status;
+
+    status = copy_from_user(&dma_data_ready,
+                            (struct aiowdm_dma_data_ready *)arg,
+                            sizeof(struct aiowdm_dma_data_ready));
+
+    if (status)
+    {
+        aio_driver_err_print("copy_from_user %ul bytes not copied", status);
+        return -EIO;
+    }
+
 
     spin_lock_irqsave(&dma_context->dma_data_lock, flags);
     if ((dma_context->dma_last_buffer < 0 ) || (dma_context->dma_first_valid == -1))
     {
-        dma_data_ready->slots = 0;
+        dma_data_ready.slots = 0;
     }
     else if (dma_context->dma_first_valid == dma_context->dma_last_buffer)
     {
-        dma_data_ready->slots = 0;
+        dma_data_ready.slots = 0;
     }
     else
     {
-        dma_data_ready->start_index = dma_context->dma_first_valid;
+        dma_data_ready.start_index = dma_context->dma_first_valid;
         last_valid = dma_context->dma_last_buffer - 1;
 
         if (last_valid == -1) last_valid = dma_context->dma_num_slots - 1;
 
-        if (last_valid >= dma_data_ready->start_index)
+        if (last_valid >= dma_data_ready.start_index)
         {
-            dma_data_ready->slots = last_valid - dma_data_ready->start_index + 1;
+            dma_data_ready.slots = last_valid - dma_data_ready.start_index + 1;
         }
         else
         {
-            dma_data_ready->slots = dma_context->dma_num_slots - dma_data_ready->start_index + last_valid + 1;
+            dma_data_ready.slots = dma_context->dma_num_slots - dma_data_ready.start_index + last_valid + 1;
         }
     }
 
-    dma_data_ready->data_discarded = dma_context->dma_data_discarded;
+    dma_data_ready.data_discarded = dma_context->dma_data_discarded;
     dma_context->dma_data_discarded = 0;
     spin_unlock_irqrestore(&dma_context->dma_data_lock, flags);
     return 0;
 }
 
-long ioctl_ACCESIO_PCI_DMA_DATA_DONE (struct accesio_pci_device_context *context, unsigned long arg)
+long ioctl_ACCESIO_PCI_DMA_DATA_TAKEN (struct accesio_pci_device_context *context, unsigned long arg)
 {
     struct dma_isr_context *dma_context = &context->isr_context->dma_context;
     unsigned long flags;
@@ -905,33 +960,42 @@ long accesio_char_driver_unlocked_ioctl (struct file *filp, unsigned int cmd, un
     switch (cmd)
     {
     case ACCESIO_PCI_CARD_DESCRIPTOR_GET:
+        aio_driver_debug_print("ACCESIO_PCI_CARD_DESCRIPTOR_GET");
         status = ioctl_ACCESIO_PCI_CARD_DESCRIPTOR_GET(context, arg);
         break;
     case ACCESIO_PCI_IRQ_ENABLE:
+        aio_driver_debug_print("ACCESIO_PCI_IRQ_ENABLE");
         break;
     case ACCESIO_PCI_IRQ_DISABLE:
+        aio_driver_debug_print("ACCESIO_PCI_IRQ_DISABLE");
         break;
     case ACCESIO_PCI_IRQ_WAIT:
+        aio_driver_debug_print("ACCESIO_PCI_IRQ_WAIT");
         status = ioctl_ACCESIO_PCI_IRQ_WAIT(context);
         break;
     case ACCESIO_PCI_IRQ_WAIT_CANCEL:
+        aio_driver_debug_print("ACCESIO_PCI_IRQ_WAIT_CANCEL");
         status = ioctl_ACCESIO_PCI_IRQ_WAIT_CANCEL(context);
         break;
     case ACCESIO_PCI_REGISTER_IO:
+        aio_driver_debug_print("ACCESIO_PCI_REGISTER_IO");
         status = ioctl_ACCESIO_PCI_REGISTER_IO(context, arg);
         break;
     //proposed APIs below. not finalized
     case ACCESIO_PCI_DMA_INIT:
+        aio_driver_debug_print("ACCESIO_PCI_DMA_INIT");
         status = ioctl_ACCESIO_PCI_DMA_INIT(context, arg);
         break;
     case ACCESIO_PCI_DMA_DATA_READY:
+        aio_driver_debug_print("ACCESIO_PCI_DMA_DATA_READY");
         status = ioctl_ACCESIO_PCI_DMA_DATA_READY(context, arg);
         break;
-    case ACCESIO_PCI_DMA_DATA_DONE:
-        status = ioctl_ACCESIO_PCI_DMA_DATA_DONE(context, arg);
+    case ACCESIO_PCI_DMA_DATA_TAKEN:
+        aio_driver_debug_print("ACCESIO_PCI_DMA_DATA_TAKEN");
+        status = ioctl_ACCESIO_PCI_DMA_DATA_TAKEN(context, arg);
         break;
     }
-    aio_driver_debug_print(">>>");
+    aio_driver_debug_print(">>> status = %d", status);
     return status;
 }
 
@@ -944,7 +1008,8 @@ int accesio_char_driver_mmap (struct file *filp, struct vm_area_struct *vma)
     aio_driver_debug_print("<<<");
     switch (vma->vm_pgoff)
     {
-        case ACCESIO_MMAP_OFFSET_DMA:
+        case ACCESIO_MMAP_OFFSET_DMA: 
+        aio_driver_debug_print("ACCESIO_MMAP_OFFSET_DMA");
         {
             struct dma_isr_context *context = &ddata->isr_context->dma_context;
             status = dma_mmap_coherent(&ddata->pci_dev->dev,
@@ -955,12 +1020,13 @@ int accesio_char_driver_mmap (struct file *filp, struct vm_area_struct *vma)
             break;
         }
         case ACCESIO_MMAP_OFFSET_BUFF :
+            aio_driver_debug_print("ACCESIO_MMAP_OFFSET_DMA");
             aio_driver_err_print("ACCESIO_MMAP_OFFSET_BUFF not implemented");
             break;
         default:
             break;
     };
-    aio_driver_debug_print(">>>");
+    aio_driver_debug_print(">>> status = 0x%d", status);
     return status;
 }
 int accesio_char_driver_open (struct inode * inode, struct file *filp)
@@ -1106,6 +1172,9 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
         context->isr_context = kmalloc(sizeof(union accesio_pci_isr_context), GFP_KERNEL);
         spin_lock_init(&(context->isr_context->dma_context.dma_data_lock));
     }
+
+    aio_driver_err_print("context = %p", context);
+    aio_driver_err_print("context->isr_context = %p", context->isr_context);
 
     context->dev = MKDEV(accesio_char_major, accesio_char_next_minor);
 

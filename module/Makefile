@@ -1,4 +1,4 @@
-KDIR = /usr/src/`uname -r`/
+KDIR = /lib/modules/`uname -r`/build/
 
 kbuild:
 	make -C $(KDIR) M=$(PWD)

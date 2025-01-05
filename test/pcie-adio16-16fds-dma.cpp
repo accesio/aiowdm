@@ -24,7 +24,7 @@
 #define SAMPLE_RATE 10000.0 /* Hz */
 
 #define LOG_FILE_NAME "samples.csv"
-#define SECONDS_TO_LOG 10.0
+#define SECONDS_TO_LOG 3.0
 
 uint8_t CHANNEL_COUNT = 1;            /* For single ended inputs, maximum CHANNEL_COUNT is 8 or 16, depending on model */
 #define HIGH_CHANNEL (CHANNEL_COUNT-1) /* channels 0 through HIGH_CHANNEL are sampled, simultaneously, from both ADAS3022 chips */
@@ -211,7 +211,7 @@ void * worker_main(void *arg)
 			if (0) printf("  Worker Thread: No data pending; Waiting for IRQ\n");
 			//status = apci_wait_for_irq(fd, 1);  // thread blocking
 			status = AIOWDM::WaitForIRQ(0);
-			if (status >= 0)
+			if (status < 0)
 			{
 				printf("  Worker Thread: Error waiting for IRQ\n");
 				break;
@@ -232,7 +232,7 @@ void * worker_main(void *arg)
 			sem_post(&(ring_sem));
 
 			//apci_dma_data_done(fd, 1, 1);
-			AIOWDM::DmaDataDone(0, 1);
+			AIOWDM::DmaDataTaken(0, 1);
 		}
 		if (1) printf("  Worker Thread: Telling driver we've taken %d buffer%c\n", num_slots, (num_slots == 1) ? ' ':'s');
 
