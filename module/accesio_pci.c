@@ -48,7 +48,6 @@ struct accesio_pci_device_context
     dev_t                                dev;
     int                                 default_bar; //used when for aiowdm calls that take CardNum parameter
     void                                *bar_bases[6];
-    union accesio_pci_isr_context        accesio_pci_isr_context;
     spinlock_t                           irq_lock;
     wait_queue_head_t                    wait_queue;
     int                                  waiting_for_irq;
@@ -576,7 +575,6 @@ irqreturn_t interrupt_adio16f_style (int irq, void *context)
 
         aio_driver_dev_print("got the spinlock");
         aio_driver_dev_print("data: %p", ddata);
-        aio_driver_dev_print("ddata->accesio_pci_isr_context: %p", ddata->accesio_pci_isr_context);
 
         aio_driver_dev_print("dma_context->dma_addr: 0x%x", dma_context->dma_addr);
         aio_driver_dev_print("dma_context->dma_virt_addr: 0x%x", dma_context->dma_virt_addr);
