@@ -576,6 +576,7 @@ irqreturn_t interrupt_adio16f_style (int irq, void *context)
         aio_driver_dev_print("got the spinlock");
         aio_driver_dev_print("data: %p", ddata);
 
+        aio_driver_dev_print("dma_context: %p", dma_context);
         aio_driver_dev_print("dma_context->dma_addr: 0x%x", dma_context->dma_addr);
         aio_driver_dev_print("dma_context->dma_virt_addr: 0x%x", dma_context->dma_virt_addr);
         aio_driver_dev_print("dma_context->dma_last_buffer: 0x%x", dma_context->dma_last_buffer);
@@ -896,6 +897,8 @@ long ioctl_ACCESIO_PCI_DMA_DATA_READY (struct accesio_pci_device_context *contex
                             (struct aiowdm_dma_data_ready *)arg,
                             sizeof(struct aiowdm_dma_data_ready));
 
+    aio_driver_dev_print("dma_context: %p", dma_context);
+
     if (status)
     {
         aio_driver_err_print("copy_from_user %ul bytes not copied", status);
@@ -932,6 +935,9 @@ long ioctl_ACCESIO_PCI_DMA_DATA_READY (struct accesio_pci_device_context *contex
     dma_data_ready.data_discarded = dma_context->dma_data_discarded;
     dma_context->dma_data_discarded = 0;
     spin_unlock_irqrestore(&dma_context->dma_data_lock, flags);
+    status = copy_to_user((struct aiowdm_dma_data_ready *)arg,
+                            &dma_data_ready,
+                            sizeof(struct aiowdm_dma_data_ready));
     return 0;
 }
 
