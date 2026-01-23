@@ -871,15 +871,15 @@ long ioctl_ACCESIO_PCI_DMA_INIT (struct accesio_pci_device_context *context, uns
     dma_context->dma_first_valid = -1;
     dma_context->dma_data_discarded = 0;
 
-      aio_driver_dev_print("dma_context->dma_addr: 0x%x", dma_context->dma_addr);
-      aio_driver_dev_print("dma_context->dma_virt_addr: 0x%x", dma_context->dma_virt_addr);
-      aio_driver_dev_print("dma_context->dma_last_buffer: 0x%x", dma_context->dma_last_buffer);
-      aio_driver_dev_print("dma_context->dma_first_valid: 0x%x", dma_context->dma_first_valid);
-      aio_driver_dev_print("dma_context->dma_num_slots: 0x%x", dma_context->dma_num_slots);
-      aio_driver_dev_print("dma_context->dma_slot_size: 0x%x", dma_context->dma_slot_size);
-      aio_driver_dev_print("dma_context->dma_data_discarded: 0x%x", dma_context->dma_data_discarded);
-      aio_driver_dev_print("dma_context->dma_data_lock: 0x%x", dma_context->dma_data_lock);
-    
+    aio_driver_dev_print("dma_context->dma_addr: 0x%x", dma_context->dma_addr);
+    aio_driver_dev_print("dma_context->dma_virt_addr: 0x%x", dma_context->dma_virt_addr);
+    aio_driver_dev_print("dma_context->dma_last_buffer: 0x%x", dma_context->dma_last_buffer);
+    aio_driver_dev_print("dma_context->dma_first_valid: 0x%x", dma_context->dma_first_valid);
+    aio_driver_dev_print("dma_context->dma_num_slots: 0x%x", dma_context->dma_num_slots);
+    aio_driver_dev_print("dma_context->dma_slot_size: 0x%x", dma_context->dma_slot_size);
+    aio_driver_dev_print("dma_context->dma_data_discarded: 0x%x", dma_context->dma_data_discarded);
+    aio_driver_dev_print("dma_context->dma_data_lock: 0x%x", dma_context->dma_data_lock);
+
 
     aio_driver_debug_print("<<<");
     return status;

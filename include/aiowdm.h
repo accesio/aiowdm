@@ -26,7 +26,7 @@ int COSWaitForIRQ (uint32_t CardNum, uint32_t PPIs, void *pData);
 
 //proposed APIs below. not finalized
 
-int DmaBufferInit (uint32_t CardNum, uint8_t NumSlots, ssize_t SlotSize, volatile uint8_t *Base);
+int DmaBufferInit (uint32_t CardNum, uint8_t NumSlots, ssize_t SlotSize, volatile uint8_t **Base);
 int DmaDataReady (uint32_t CardNum, int *StartIndex, int *Slots, int *DataDiscarded);
 int DmaDataTaken (uint32_t CardNum, int Slots);
 

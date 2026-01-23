@@ -24,9 +24,9 @@
 #define SAMPLE_RATE 10000.0 /* Hz */
 
 #define LOG_FILE_NAME "samples.csv"
-#define SECONDS_TO_LOG 3.0
+#define SECONDS_TO_LOG 10.0
 
-uint8_t CHANNEL_COUNT = 1;            /* For single ended inputs, maximum CHANNEL_COUNT is 8 or 16, depending on model */
+uint8_t CHANNEL_COUNT = 10;            /* For single ended inputs, maximum CHANNEL_COUNT is 8 or 16, depending on model */
 #define HIGH_CHANNEL (CHANNEL_COUNT-1) /* channels 0 through HIGH_CHANNEL are sampled, simultaneously, from both ADAS3022 chips */
 #define NUM_CHANNELS (2 * CHANNEL_COUNT)
 #define AMOUNT_OF_SAMPLES_TO_LOG (SECONDS_TO_LOG * SAMPLE_RATE * 2)
@@ -53,7 +53,7 @@ uint8_t CHANNEL_COUNT = 1;            /* For single ended inputs, maximum CHANNE
 
 /* This simple sample uses a Ring-buffer to queue data for logging to disk via a background thread */
 /* It is possible for the driver and the user to have a different number of slots, but making them match is less complicated */
-#define RING_BUFFER_SLOTS 4
+#define RING_BUFFER_SLOTS 8
 static uint32_t ring_buffer[RING_BUFFER_SLOTS][SAMPLES_PER_TRANSFER];
 static sem_t ring_sem;
 static sem_t logger_sem;
@@ -309,7 +309,7 @@ int main (void)
 
 	//Setup dma ring buffer in driver
 	//status = apci_dma_transfer_size(fd, 1, RING_BUFFER_SLOTS, BYTES_PER_TRANSFER);
-	status = AIOWDM::DmaBufferInit(0, RING_BUFFER_SLOTS, BYTES_PER_TRANSFER, DmaBase);
+	status = AIOWDM::DmaBufferInit(0, RING_BUFFER_SLOTS, BYTES_PER_TRANSFER * RING_BUFFER_SLOTS, &DmaBase);
 	printf("Setting bytes per transfer: 0x%x\n", BYTES_PER_TRANSFER);
 
 	if (status)  {
