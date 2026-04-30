@@ -1,3 +1,4 @@
-EXTRA_CFLAGS = -Wall -g -DAIO_DEBUG=1
+EXTRA_CFLAGS = -Wall -g
+EXTRA_CFLAGS += $(AIO_CFLAGS)
 
 obj-m = accesio_pci.o

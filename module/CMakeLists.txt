@@ -30,6 +30,9 @@ else()
   set (AIO_CFLAGS "${AIO_CFLAGS} -DAIO_VERBOSE=0")
 endif(AIO_VERBOSE)
 
+  set (AIO_CFLAGS "${AIO_CFLAGS} -DAIO_VERBOSE=0 -ffile-prefix-map=${CMAKE_SOURCE_DIR}/module=.")
+
+
 Set( KERNEL_DIR "/lib/modules/${CMAKE_SYSTEM_VERSION}/build" )
 Set( KBUILD_CMD ${CMAKE_MAKE_PROGRAM}
                 -C ${KERNEL_DIR}

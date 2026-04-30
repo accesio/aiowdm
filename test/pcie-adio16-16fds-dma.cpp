@@ -100,7 +100,9 @@ void abort_handler(int s){
 	AIOWDM::RelOutPortL(0, RESETOFFSET, 0x1);
 
 	terminate = 2;
-	pthread_join(logger_thread, NULL);
+	AIOWDM::AbortRequest(0);
+	sem_post(&ring_sem);
+	sem_post(&logger_sem);
 	exit(1);
 }
 
@@ -261,6 +263,11 @@ void set_acquisition_rate (int fd, double *Hz)
 
 	//apci_write32(fd, 1, BAR_REGISTER, DIVISOROFFSET, divisor);
 	AIOWDM::RelOutPortL(0, DIVISOROFFSET, divisor);
+	divisor = divisor / CHANNEL_COUNT;
+	printf(" [intrascan conversion divisor = %d Hz] ", divisor);
+	AIOWDM::RelOutPortL(0, DIVISOROFFSET + 4, divisor);
+	divisor = AIOWDM::RelInPortL(0, DIVISOROFFSET + 4);
+	printf(" [intrascan divisor readback = %d] ", divisor);
 }
 
 /* mPCIe-ADIO16-8F Family:  ADC Data Acquisition sample (with logging to sample.csv)
@@ -307,9 +314,13 @@ int main (void)
 	// 	getchar();
 	// }
 
+	//reset everything before arming DMA so the reset does not wipe the DMA registers
+	//apci_write32(fd, 1,BAR_REGISTER, RESETOFFSET, 0x1);
+	AIOWDM::RelOutPortL(0, RESETOFFSET, 0x1);
+
 	//Setup dma ring buffer in driver
 	//status = apci_dma_transfer_size(fd, 1, RING_BUFFER_SLOTS, BYTES_PER_TRANSFER);
-	status = AIOWDM::DmaBufferInit(0, RING_BUFFER_SLOTS, BYTES_PER_TRANSFER * RING_BUFFER_SLOTS, &DmaBase);
+	status = AIOWDM::DmaBufferInit(0, RING_BUFFER_SLOTS, BYTES_PER_TRANSFER, &DmaBase);
 	printf("Setting bytes per transfer: 0x%x\n", BYTES_PER_TRANSFER);
 
 	if (status)  {
@@ -318,10 +329,6 @@ int main (void)
 	}
 
 	pthread_create(&worker_thread, NULL, &worker_main, NULL);
-
-	//reset everything
-	//apci_write32(fd, 1,BAR_REGISTER, RESETOFFSET, 0x1);
-	AIOWDM::RelOutPortL(0, RESETOFFSET, 0x1);
 
 	//set depth of FIFO to generate IRQ
 	//apci_write32(fd, 1, BAR_REGISTER, FAFIRQTHRESHOLDOFFSET, FIFO_SIZE);
@@ -384,8 +391,10 @@ err_out: //Once a start has been issued to the card we need to tell it to stop b
 
 	terminate = 1;
 	sem_post(&ring_sem);
+	AIOWDM::AbortRequest(0);
 	printf("Done acquiring %3.2f second%c. Waiting for log file to flush.\n", (SECONDS_TO_LOG), (SECONDS_TO_LOG==1)?' ':'s');
 	fflush(stdout);
+	pthread_join(worker_thread, NULL);
 	pthread_join(logger_thread, NULL);
 
 			timerEnd = time(NULL);

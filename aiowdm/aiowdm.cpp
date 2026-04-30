@@ -237,7 +237,7 @@ int DmaBufferInit (uint32_t CardNum, uint8_t NumSlots, ssize_t SlotSize, volatil
 	dma_init.slot_size = SlotSize;
 	status = ioctl(cards[CardNum].fd, ACCESIO_PCI_DMA_INIT, &dma_init);
 	if (!(status)) {
-		*Base = (uint8_t *) mmap(nullptr, NumSlots + SlotSize, PROT_READ | PROT_WRITE , MAP_SHARED, cards[CardNum].fd, ACCESIO_MMAP_OFFSET_DMA * sysconf(_SC_PAGE_SIZE));
+		*Base = (uint8_t *) mmap(nullptr, (size_t)NumSlots * SlotSize, PROT_READ | PROT_WRITE , MAP_SHARED, cards[CardNum].fd, ACCESIO_MMAP_OFFSET_DMA * sysconf(_SC_PAGE_SIZE));
 		if (*Base == MAP_FAILED) {
 			status = errno;
 			libaiowdm_err_print("mmap failed: %s", std::strerror(errno));

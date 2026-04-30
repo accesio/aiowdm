@@ -8,6 +8,8 @@ else()
   add_compile_definitions(AIO_VERBOSE=0)
 endif(AIO_VERBOSE)
 
+add_compile_options(-ffile-prefix-map=${CMAKE_SOURCE_DIR}=.)
+
 add_library(aiowdm OBJECT aiowdm.cpp)
 add_library(aiowdm_shared SHARED aiowdm.cpp)
 

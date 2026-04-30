@@ -552,6 +552,8 @@ void disable_adio16f_style (void *context)
 //All the bits that can indicate an irq occurred
 #define ADIO16F_INTERRUPT_MASK 0x81FF0000
 #define ADIO16F_FAF BIT(20)
+#define bmADIO_ADCTRIGGERStatus BIT(16)
+#define bmADIO_DMADoneStatus    BIT(18)
 
 
 irqreturn_t interrupt_adio16f_style (int irq, void *context)
@@ -566,10 +568,11 @@ irqreturn_t interrupt_adio16f_style (int irq, void *context)
         return IRQ_NONE;
     }
 
-    if (!(irq_status & ADIO16F_FAF)) {
+    if (irq_status & ( bmADIO_ADCTRIGGERStatus | bmADIO_DMADoneStatus)) {
         struct dma_isr_context *dma_context =
             (struct dma_isr_context *)&ddata->isr_context->dma_context;
         dma_addr_t base = dma_context->dma_addr;
+        bool notify_user_flag = true;
 
         spin_lock(&dma_context->dma_data_lock);
 
@@ -587,24 +590,27 @@ irqreturn_t interrupt_adio16f_style (int irq, void *context)
         aio_driver_dev_print("dma_context->dma_data_lock: 0x%x", dma_context->dma_data_lock);
 
 
-        if (unlikely(dma_context->dma_first_valid == -1))
+        if (unlikely(dma_context->dma_last_buffer == -1))
         {
-            dma_context->dma_first_valid = 0;
-            dma_context->dma_last_buffer = 0;
+            /* First IRQ (ADC Trigger at scan start): program slot 0, don't notify user yet */
+            notify_user_flag = false;
         }
-        else
+        else if (dma_context->dma_first_valid == -1)
         {
-            dma_context->dma_last_buffer++;
-            dma_context->dma_last_buffer %= dma_context->dma_num_slots;
+            /* Second IRQ: slot 0 DMA is complete, mark it valid */
+            dma_context->dma_first_valid = 0;
+        }
 
-            if (dma_context->dma_last_buffer == dma_context->dma_first_valid)
-            {
-                aio_driver_err_print("ISR: data discarded");
-                dma_context->dma_last_buffer--;
-                if (dma_context->dma_last_buffer < 0)
-                    dma_context->dma_last_buffer = dma_context->dma_num_slots - 1;
-                dma_context->dma_data_discarded++;
-            }
+        dma_context->dma_last_buffer++;
+        dma_context->dma_last_buffer %= dma_context->dma_num_slots;
+
+        if (dma_context->dma_last_buffer == dma_context->dma_first_valid)
+        {
+            aio_driver_err_print("ISR: data discarded");
+            dma_context->dma_last_buffer--;
+            if (dma_context->dma_last_buffer < 0)
+                dma_context->dma_last_buffer = dma_context->dma_num_slots - 1;
+            dma_context->dma_data_discarded++;
         }
 
         spin_unlock(&dma_context->dma_data_lock);
@@ -616,16 +622,26 @@ irqreturn_t interrupt_adio16f_style (int irq, void *context)
         iowrite32(base & 0xffffffff, ddata->bar_bases[0] + 0x10);
         iowrite32(base >> 32, ddata->bar_bases[0] + 0x14);
         iowrite32(dma_context->dma_slot_size, ddata->bar_bases[0] + 0x18);
-        iowrite32(4, ddata->bar_bases + 0x22);
+        iowrite32(4, ddata->bar_bases[0] + 0x1C);
+        ioread32(ddata->bar_bases[0] + 0x1C); /* flush posted PCI writes */
+
+        ddata->irq_return = irq_status;
+        iowrite32(irq_status, ddata->bar_bases[2] + 0x40);
+        /* read back to flush and avoid duplicate IRQs */
+        irq_status = ioread32(ddata->bar_bases[2] + 0x40);
+
+        if (notify_user_flag)
+        {
+            accesio_notify_user()
+        }
+    } else {
+        ddata->irq_return = irq_status;
+        iowrite32(irq_status, ddata->bar_bases[2] + 0x40);
+        /* read back to flush and avoid duplicate IRQs */
+        irq_status = ioread32(ddata->bar_bases[2] + 0x40);
+
+        accesio_notify_user()
     }
-
-
-    ddata->irq_return = irq_status;
-    iowrite32(irq_status & ADIO16F_INTERRUPT_MASK, ddata->bar_bases[0] + 0x40);
-    //have to perform a read to avoid duplicate IRQs
-    irq_status = ioread32(ddata->bar_bases[0] + 0x40);
-
-    accesio_notify_user()
 
     aio_driver_dev_print(">>>");
 
@@ -871,6 +887,15 @@ long ioctl_ACCESIO_PCI_DMA_INIT (struct accesio_pci_device_context *context, uns
     dma_context->dma_first_valid = -1;
     dma_context->dma_data_discarded = 0;
 
+    if (status == 0)
+    {
+        iowrite32(dma_context->dma_addr & 0xffffffff, context->bar_bases[0] + 0x10);
+        iowrite32(dma_context->dma_addr >> 32, context->bar_bases[0] + 0x14);
+        iowrite32(dma_context->dma_slot_size, context->bar_bases[0] + 0x18);
+        iowrite32(4, context->bar_bases[0] + 0x1C);
+        ioread32(context->bar_bases[0] + 0x1C);
+    }
+
     aio_driver_dev_print("dma_context->dma_addr: 0x%x", dma_context->dma_addr);
     aio_driver_dev_print("dma_context->dma_virt_addr: 0x%x", dma_context->dma_virt_addr);
     aio_driver_dev_print("dma_context->dma_last_buffer: 0x%x", dma_context->dma_last_buffer);
@@ -1086,6 +1111,8 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
         goto err_enable;
     }
 
+    pci_set_master(dev);
+
     status = pci_request_regions(dev, "accesio_pci");
 
     if (status)
@@ -1169,6 +1196,12 @@ int accesio_pci_driver_probe (struct pci_dev *dev, const struct pci_device_id *i
     {
         aio_driver_err_print("request_irq returned %d", status);
         goto err_request_irq;
+    }
+
+    if (context->bar_bases[0] != NULL)
+    {
+        /* Match the reference driver: enable the PCIe-side interrupt gate. */
+        iowrite8(0x9, context->bar_bases[0] + 0x69);
     }
 
     if (context->descriptor->has_dma)
