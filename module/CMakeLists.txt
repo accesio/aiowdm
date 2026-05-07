@@ -33,7 +33,17 @@ endif(AIO_VERBOSE)
   set (AIO_CFLAGS "${AIO_CFLAGS} -DAIO_VERBOSE=0 -ffile-prefix-map=${CMAKE_SOURCE_DIR}/module=.")
 
 
-Set( KERNEL_DIR "/lib/modules/${CMAKE_SYSTEM_VERSION}/build" )
+execute_process(
+  COMMAND uname -r
+  OUTPUT_VARIABLE KERNEL_RELEASE
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+if (NOT KERNEL_RELEASE)
+  message(FATAL_ERROR "Failed to determine running kernel release via 'uname -r'; cannot continue kernel module build.")
+endif()
+
+Set( KERNEL_DIR "/lib/modules/${KERNEL_RELEASE}/build" )
 Set( KBUILD_CMD ${CMAKE_MAKE_PROGRAM}
                 -C ${KERNEL_DIR}
                 AIO_CFLAGS=${AIO_CFLAGS}
